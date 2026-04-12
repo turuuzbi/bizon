@@ -9,12 +9,6 @@ const navigationItems = [
   "Багаж",
 ] as const;
 
-const heroNotes = [
-  "Rounded showroom feel",
-  "1,200+ curated SKUs",
-  "Trade-friendly sourcing",
-] as const;
-
 const heroStats = [
   {
     value: "48h",
@@ -57,7 +51,8 @@ const categoryCards = [
   },
   {
     title: "Плитка, чулуу",
-    blurb: "Гал тогоо, ариун цэврийн өрөө, lobby zone-д зориулсан refined сонголтууд.",
+    blurb:
+      "Гал тогоо, ариун цэврийн өрөө, lobby zone-д зориулсан refined сонголтууд.",
     meta: "74 SKU",
     tone: "linear-gradient(135deg, #f3f1ef 0%, #ddd7d0 100%)",
   },
@@ -69,19 +64,22 @@ const categoryCards = [
   },
   {
     title: "Сангийн тоноглол",
-    blurb: "Minimal silhouette-тэй faucet, shower set, ванн болон угаалтуурын шийдлүүд.",
+    blurb:
+      "Minimal silhouette-тэй faucet, shower set, ванн болон угаалтуурын шийдлүүд.",
     meta: "58 SKU",
     tone: "linear-gradient(135deg, #edf5fb 0%, #c7dff0 100%)",
   },
   {
     title: "Цахилгаан",
-    blurb: "Switch, outlet, track lighting, hidden hardware, site-ready accessories.",
+    blurb:
+      "Switch, outlet, track lighting, hidden hardware, site-ready accessories.",
     meta: "67 SKU",
     tone: "linear-gradient(135deg, #f3f2ff 0%, #cbc7ff 100%)",
   },
   {
     title: "Багаж",
-    blurb: "Daily-duty hand tools болон install phase-д хэрэгтэй power essentials.",
+    blurb:
+      "Daily-duty hand tools болон install phase-д хэрэгтэй power essentials.",
     meta: "143 SKU",
     tone: "linear-gradient(135deg, #f9f1f5 0%, #f1ccd8 100%)",
   },
@@ -172,31 +170,14 @@ export default function Home() {
       <div className="page-veil pointer-events-none absolute inset-0" />
 
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 pb-12 pt-4 sm:px-6 lg:px-8">
-        <div className="fade-enter flex flex-wrap items-center justify-between gap-3 rounded-full border border-white/70 bg-white/75 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6f6780] shadow-[0_20px_50px_rgba(122,89,170,0.08)] backdrop-blur md:px-6">
-          <span>Ulaanbaatar showroom language</span>
-          <div className="flex flex-wrap items-center gap-2 text-[#8a8199]">
-            <span className="soft-chip">White-led palette</span>
-            <span className="soft-chip">Accent: #a46ef0</span>
-            <span className="soft-chip">Rounded premium layout</span>
-          </div>
-        </div>
-
         <header
           className="surface-panel fade-enter p-5 sm:p-6"
           style={{ animationDelay: "80ms" }}
         >
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[22px] bg-[#f2e8ff] text-lg font-semibold text-[#8d59e3] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                B
-              </div>
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8d59e3]">
-                  Bizon
-                </p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-[#18131f]">
-                  Building Materials
-                </p>
+              <div className="flex h-35 w-35 items-center justify-center rounded-[50px] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <img src={"Purple BIZON logo.png"} />
               </div>
             </div>
 
@@ -205,189 +186,82 @@ export default function Home() {
                 <a
                   key={item}
                   href="#collections"
-                  className="rounded-full border border-[#ece5f8] bg-[#fcfbff] px-4 py-2 text-sm font-medium text-[#5f5770] transition-colors hover:border-[#d8c4fa] hover:text-[#8d59e3]"
+                  className="rounded-full  bg-[#fcfbff] px-4 py-2 text-sm font-medium text-[#5f5770] transition-colors hover:border-[#d8c4fa] hover:text-[#8d59e3]"
                 >
                   {item}
                 </a>
               ))}
             </nav>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href="#projects"
-                className="rounded-full border border-[#e7def7] px-5 py-3 text-sm font-medium text-[#4d445e] transition-colors hover:border-[#cdb4f8] hover:text-[#8d59e3]"
-              >
-                Project Desk
-              </a>
+            <div className="flex  items-center gap-3">
+              <label className="search-shell flex w-full items-center gap-3 px-4 py-3 lg:max-w-[200px]">
+                <img src={"shopping.svg"} />
+                <input
+                  aria-label="Search materials"
+                  className="w-full bg-transparent text-sm text-[#4e465f] outline-none placeholder:text-[#aaa3b8]"
+                  placeholder="Хайх материал, брэнд, ангилал"
+                  type="text"
+                />
+              </label>
+
+              <img src={"user.svg"} />
+
               <a
                 href="#featured"
                 className="shine-button rounded-full bg-[#a46ef0] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(164,110,240,0.28)] transition-transform hover:-translate-y-0.5"
               >
-                Explore Catalog
+                <img src={"list.svg"} />
               </a>
-            </div>
-          </div>
-
-          <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <label className="search-shell flex w-full items-center gap-3 px-4 py-3 lg:max-w-[420px]">
-              <span className="text-sm font-semibold text-[#8d59e3]">Search</span>
-              <input
-                aria-label="Search materials"
-                className="w-full bg-transparent text-sm text-[#4e465f] outline-none placeholder:text-[#aaa3b8]"
-                placeholder="Хайх материал, брэнд, ангилал"
-                type="text"
-              />
-            </label>
-
-            <div className="flex flex-wrap items-center gap-2">
-              {["Trade pricing", "Interior focus", "Fast delivery"].map((item) => (
-                <span key={item} className="soft-chip">
-                  {item}
-                </span>
-              ))}
             </div>
           </div>
         </header>
 
         <main className="flex flex-col gap-6">
-          <section className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-            <div
-              className="surface-panel hero-pattern fade-enter overflow-hidden px-6 py-8 sm:p-8 lg:p-10"
-              style={{ animationDelay: "160ms" }}
-            >
-              <span className="section-label">Landing Direction</span>
+          <div
+            className="surface-panel hero-pattern fade-enter overflow-hidden px-6 py-8 sm:p-8 lg:p-10"
+            style={{ animationDelay: "160ms" }}
+          >
+            <span className="section-label">Landing Direction</span>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {heroNotes.map((item) => (
-                  <span key={item} className="soft-chip">
-                    {item}
-                  </span>
-                ))}
-              </div>
+            <h1 className=" mt-6 max-w-4xl text-[clamp(2.9rem,7vw,6.1rem)] font-semibold leading-[0.94] tracking-[-0.07em] text-[#1b1624]">
+              Барилгын материалын
+              <span className="block text-[#a46ef0]">
+                илүү зөөлөн, илүү цэвэр
+              </span>
+              онлайн туршлага
+            </h1>
 
-              <h1 className="mt-6 max-w-4xl text-[clamp(2.9rem,7vw,6.1rem)] font-semibold leading-[0.94] tracking-[-0.07em] text-[#1b1624]">
-                Барилгын материалын
-                <span className="block text-[#a46ef0]">илүү зөөлөн, илүү цэвэр</span>
-                онлайн туршлага
-              </h1>
-
-              <p className="mt-6 max-w-2xl text-base leading-8 text-[#685f77] sm:text-lg">
-                HAUSPLUS-ийн showroom мэдрэмжийг авч үлдээд, Bizon дээр илүү
-                round, илүү энгийн, илүү амьсгалтай landing page болгож
-                хөрвүүллээ. Цагаан үндсэн орчин дээр таны purple accent зөвхөн
-                support rhythm байдлаар ажиллана.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#collections"
-                  className="shine-button rounded-full bg-[#a46ef0] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(164,110,240,0.28)] transition-transform hover:-translate-y-0.5"
-                >
-                  Shop by Category
-                </a>
-                <a
-                  href="#projects"
-                  className="rounded-full border border-[#e7def7] bg-white px-6 py-3.5 text-sm font-medium text-[#4d445e] transition-colors hover:border-[#cdb4f8] hover:text-[#8d59e3]"
-                >
-                  Request a Project Call
-                </a>
-              </div>
-
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
-                {heroStats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-[28px] border border-[#efe7fb] bg-white/85 p-5 shadow-[0_12px_30px_rgba(117,86,165,0.08)]"
-                  >
-                    <p className="text-3xl font-semibold tracking-[-0.05em] text-[#19131f]">
-                      {stat.value}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[#726a82]">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              <div
-                className="surface-panel fade-enter p-4 sm:p-5"
-                style={{ animationDelay: "240ms" }}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#collections"
+                className="shine-button rounded-full bg-[#a46ef0] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(164,110,240,0.28)] transition-transform hover:-translate-y-0.5"
               >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="section-label">Brand Mark</span>
-                  <span className="soft-chip">Hero-ready logo card</span>
-                </div>
-
-                <div className="paper-grid mt-4 rounded-[30px] bg-[linear-gradient(180deg,#fbf7ff_0%,#f1e7ff_100%)] p-4">
-                  <div className="float-slow rounded-[26px] bg-white p-4 shadow-[0_22px_60px_rgba(132,92,189,0.16)]">
-                    <Image
-                      src="/bizon-logo.png"
-                      alt="Bizon building materials logo"
-                      width={1408}
-                      height={768}
-                      priority
-                      className="h-auto w-full rounded-[22px]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div
-                  className="surface-panel fade-enter p-5"
-                  style={{ animationDelay: "300ms" }}
-                >
-                  <span className="section-label">Popular Lanes</span>
-                  <div className="mt-5 space-y-3">
-                    {["Wood + Boards", "Paint + Finish", "Bath + Plumbing", "Hardware + Tools"].map(
-                      (item, index) => (
-                        <div
-                          key={item}
-                          className="flex items-center justify-between rounded-[22px] bg-[#fcfbff] px-4 py-3"
-                        >
-                          <span className="text-sm font-medium text-[#4c4558]">
-                            {item}
-                          </span>
-                          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a46ef0]">
-                            0{index + 1}
-                          </span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  id="projects"
-                  className="surface-panel fade-enter overflow-hidden p-5"
-                  style={{ animationDelay: "360ms" }}
-                >
-                  <span className="section-label">Trade Desk</span>
-                  <h3 className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-[#18131f]">
-                    Built for projects, not only carts
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-[#6e667e]">
-                    Contractor болон designer flow-т shortlist, re-order, bulk
-                    sourcing, material notes гэсэн дараагийн алхмуудыг амархан
-                    нэмж болно.
-                  </p>
-
-                  <div className="mt-6 grid gap-3">
-                    {["Quote requests", "Saved boards", "Trade-only pricing"].map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-[22px] border border-[#eadffd] bg-[#faf6ff] px-4 py-3 text-sm font-medium text-[#5c536b]"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                Shop by Category
+              </a>
+              <a
+                href="#projects"
+                className="rounded-full border border-[#e7def7] bg-white px-6 py-3.5 text-sm font-medium text-[#4d445e] transition-colors hover:border-[#cdb4f8] hover:text-[#8d59e3]"
+              >
+                Request a Project Call
+              </a>
             </div>
-          </section>
+
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {heroStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-[28px] border border-[#efe7fb] bg-white/85 p-5 shadow-[0_12px_30px_rgba(117,86,165,0.08)]"
+                >
+                  <p className="text-3xl font-semibold tracking-[-0.05em] text-[#19131f]">
+                    {stat.value}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#726a82]">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <section className="grid gap-4 md:grid-cols-3">
             {serviceCards.map((card, index) => (
@@ -503,7 +377,7 @@ export default function Home() {
               <SectionIntro
                 eyebrow="By Project"
                 title="Category-only биш, space-based merchandising"
-                copy="HAUSPLUS-ийн inspiration-ийг шууд хуулалгүйгээр, төслөөр нь browse хийдэг илүү орчин үеийн урсгал нэмлээ."
+                copy=""
               />
 
               <div className="mt-8 space-y-4">
@@ -547,9 +421,10 @@ export default function Home() {
                   homepage feel.
                 </h2>
                 <p className="mt-5 max-w-2xl text-base leading-8 text-[#685f77] sm:text-lg">
-                  Хэрвээ энэ direction таалагдвал дараагийн алхмаар category page,
-                  product card system, cart entry points, Clerk-aware account
-                  states болон mobile navigation-г яг энэ визуал хэл дээр үргэлжлүүлнэ.
+                  Хэрвээ энэ direction таалагдвал дараагийн алхмаар category
+                  page, product card system, cart entry points, Clerk-aware
+                  account states болон mobile navigation-г яг энэ визуал хэл
+                  дээр үргэлжлүүлнэ.
                 </p>
 
                 <div className="mt-8 flex flex-wrap gap-3">
