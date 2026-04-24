@@ -1,166 +1,132 @@
 import Image from "next/image";
+import Link from "next/link";
+
+import { SiteAuthActions } from "@/components/site-auth-actions";
 
 const navigationItems = [
-  "Мод, хавтан",
-  "Плитка, чулуу",
-  "Будгийн систем",
-  "Сангийн тоноглол",
-  "Цахилгаан",
-  "Багаж",
+  { label: "Ангилал", href: "#categories" },
+  { label: "Төслийн үйлчилгээ", href: "#project-desk" },
+  { label: "Холбоо барих", href: "#contact" },
 ] as const;
 
-const heroNotes = [
-  "Rounded showroom feel",
-  "1,200+ curated SKUs",
-  "Trade-friendly sourcing",
-] as const;
-
-const heroStats = [
+const metrics = [
   {
-    value: "48h",
-    label: "Хот доторх хурдан хүргэлт",
+    value: "1,200+",
+    label: "Каталогт оруулахад бэлэн үндсэн SKU",
   },
   {
-    value: "32",
-    label: "Төслийн ангилалд тохирсон шийдэл",
+    value: "48 цаг",
+    label: "Хот доторх шуурхай хүргэлтийн боломж",
   },
   {
-    value: "A+",
-    label: "Премиум материалын сонголт",
-  },
-] as const;
-
-const serviceCards = [
-  {
-    index: "01",
-    title: "Premium sourcing",
-    copy: "Импортын брэнд, интерьерийн материал, төслийн хэрэгцээг нэг урсгалд цэгцэлсэн бүтэц.",
-  },
-  {
-    index: "02",
-    title: "Project support",
-    copy: "Архитектор, дизайнер, гүйцэтгэгчдэд зориулсан shortlist, багц болон зөвлөмжийн урсгал.",
-  },
-  {
-    index: "03",
-    title: "Elegant shopping",
-    copy: "HAUSPLUS-ийн showroom мэдрэмжийг хадгалсан ч илүү зөөлөн, цэвэр, амьсгалтай хуудас.",
+    value: "B2B",
+    label: "Төслийн үнэ, shortlist, re-order урсгал",
   },
 ] as const;
 
 const categoryCards = [
   {
     title: "Мод, хавтан",
-    blurb: "Cabinet-grade фанер, MDF, trim болон интерьерийн суурь материал.",
+    description:
+      "Фанер, MDF, trim болон интерьерийн суурь материалын цэгцтэй сонголт.",
     meta: "126 SKU",
-    tone: "linear-gradient(135deg, #f7efe4 0%, #eed8bb 100%)",
+    tone: "linear-gradient(135deg, #e7d5bd 0%, #f7efe3 100%)",
   },
   {
     title: "Плитка, чулуу",
-    blurb: "Гал тогоо, ариун цэврийн өрөө, lobby zone-д зориулсан refined сонголтууд.",
+    description:
+      "Гал тогоо, ариун цэврийн өрөө, lobby zone-д зориулсан үндсэн бүрдэл.",
     meta: "74 SKU",
-    tone: "linear-gradient(135deg, #f3f1ef 0%, #ddd7d0 100%)",
+    tone: "linear-gradient(135deg, #d9d6d1 0%, #f2efeb 100%)",
   },
   {
     title: "Будгийн систем",
-    blurb: "Матт, сатин, хамгаалалтын бүрхүүл, праймер, sealant-ууд.",
+    description:
+      "Матт, сатин, хамгаалалтын бүрхүүл, праймер, sealant-ийн багц.",
     meta: "91 SKU",
-    tone: "linear-gradient(135deg, #f6ebff 0%, #d5b8ff 100%)",
+    tone: "linear-gradient(135deg, #c7d2cb 0%, #edf1ee 100%)",
   },
   {
     title: "Сангийн тоноглол",
-    blurb: "Minimal silhouette-тэй faucet, shower set, ванн болон угаалтуурын шийдлүүд.",
+    description:
+      "Faucet, shower set, ванн болон угаалтуурын сонгомол шийдлүүд.",
     meta: "58 SKU",
-    tone: "linear-gradient(135deg, #edf5fb 0%, #c7dff0 100%)",
+    tone: "linear-gradient(135deg, #c7d8de 0%, #eef4f6 100%)",
   },
   {
     title: "Цахилгаан",
-    blurb: "Switch, outlet, track lighting, hidden hardware, site-ready accessories.",
+    description:
+      "Switch, outlet, lighting болон site-ready accessories-ийн багц.",
     meta: "67 SKU",
-    tone: "linear-gradient(135deg, #f3f2ff 0%, #cbc7ff 100%)",
+    tone: "linear-gradient(135deg, #d7d6cf 0%, #f1f0eb 100%)",
   },
   {
     title: "Багаж",
-    blurb: "Daily-duty hand tools болон install phase-д хэрэгтэй power essentials.",
+    description:
+      "Daily-duty hand tools болон install phase-д хэрэгтэй essentials.",
     meta: "143 SKU",
-    tone: "linear-gradient(135deg, #f9f1f5 0%, #f1ccd8 100%)",
+    tone: "linear-gradient(135deg, #dccfc4 0%, #f4eee8 100%)",
   },
 ] as const;
 
-const featuredProducts = [
+const serviceSteps = [
+  {
+    title: "Shortlist",
+    copy: "Архитектор, дизайнер, гүйцэтгэгчийн хэрэгцээнд таарсан барааг багцална.",
+  },
+  {
+    title: "Quote",
+    copy: "Bulk order, trade pricing болон нийлүүлэлтийн нөхцөлийг нэг цонхоор гаргана.",
+  },
+  {
+    title: "Delivery",
+    copy: "Сайт дээрх графикт тааруулсан хүргэлт, дахин захиалгын урсгалыг бэлдэнэ.",
+  },
+] as const;
+
+const supportPoints = [
+  "Төслийн багуудад зориулсан quote-first урсгал",
+  "Saved boards болон order history нэмэхэд бэлэн бүтэц",
+  "Каталог, account, project desk-ийг нэг хэлээр холбосон нүүр хуудас",
+] as const;
+
+const featuredLines = [
   {
     name: "18мм Хус фанер",
-    detail: "Furniture-grade / smooth face / interior build",
+    detail: "Cabinet-grade / interior build",
     price: "98,000 MNT",
-    chip: "Best for cabinetry",
-    art: "linear-gradient(135deg, #f1dec6 0%, #caa57f 100%)",
   },
   {
     name: "Soft Matte Wall Paint",
-    detail: "Low sheen / easy maintenance / calm finish",
+    detail: "Low sheen / easy maintenance",
     price: "46,000 MNT",
-    chip: "New palette",
-    art: "linear-gradient(135deg, #f3e6ff 0%, #a46ef0 100%)",
   },
   {
     name: "Hans Shower Column",
-    detail: "Warm metal accent / clean geometry / hotel mood",
+    detail: "Clean geometry / hotel-style finish",
     price: "389,000 MNT",
-    chip: "Bathroom focus",
-    art: "linear-gradient(135deg, #ebedf0 0%, #adb6bf 100%)",
-  },
-  {
-    name: "Trade Workbench Set",
-    detail: "Install-ready kit / clamp system / site companion",
-    price: "214,000 MNT",
-    chip: "Pro choice",
-    art: "linear-gradient(135deg, #f4f0ea 0%, #c6b29c 100%)",
   },
 ] as const;
 
-const projectZones = [
-  {
-    title: "Apartment Fit-Out",
-    copy: "Wall finish, lighting, fittings, bathroom materials болон storage accent-уудыг нэг rhythm-д.",
-    points: ["Walls", "Lighting", "Bathroom"],
-  },
-  {
-    title: "Cafe / Retail Shell",
-    copy: "High-touch гадаргуу, durable paint system, statement lighting, compact joinery materials.",
-    points: ["Counters", "Flooring", "Facade"],
-  },
-  {
-    title: "Private House Build",
-    copy: "Exterior-to-interior flow-д таарах sheet goods, plumbing, hardware, finishing package.",
-    points: ["Exterior", "Utility", "Interior"],
-  },
-] as const;
-
-const footerLinks = [
-  "Каталог",
-  "Төслийн зөвлөгөө",
-  "Хүргэлт",
-  "Брэндүүд",
-  "Contact",
-] as const;
-
-function SectionIntro({
+function SectionHeading({
   eyebrow,
   title,
-  copy,
+  description,
 }: {
   eyebrow: string;
   title: string;
-  copy: string;
+  description: string;
 }) {
   return (
     <div className="max-w-2xl">
-      <span className="section-label">{eyebrow}</span>
-      <h2 className="mt-5 text-3xl font-semibold tracking-[-0.05em] text-[#1b1624] sm:text-4xl">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
+        {eyebrow}
+      </p>
+      <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#1d1a17] sm:text-4xl">
         {title}
       </h2>
-      <p className="mt-4 max-w-xl text-base leading-7 text-[#685f77] sm:text-lg">
-        {copy}
+      <p className="mt-4 text-base leading-7 text-[#625f5a] sm:text-lg">
+        {description}
       </p>
     </div>
   );
@@ -168,425 +134,279 @@ function SectionIntro({
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="page-veil pointer-events-none absolute inset-0" />
-
-      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 pb-12 pt-4 sm:px-6 lg:px-8">
-        <div className="fade-enter flex flex-wrap items-center justify-between gap-3 rounded-full border border-white/70 bg-white/75 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6f6780] shadow-[0_20px_50px_rgba(122,89,170,0.08)] backdrop-blur md:px-6">
-          <span>Ulaanbaatar showroom language</span>
-          <div className="flex flex-wrap items-center gap-2 text-[#8a8199]">
-            <span className="soft-chip">White-led palette</span>
-            <span className="soft-chip">Accent: #a46ef0</span>
-            <span className="soft-chip">Rounded premium layout</span>
-          </div>
-        </div>
-
-        <header
-          className="surface-panel fade-enter p-5 sm:p-6"
-          style={{ animationDelay: "80ms" }}
-        >
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+    <main className="min-h-screen">
+      <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-6 px-4 py-4 sm:px-6 lg:px-8">
+        <header className="rounded-[28px] border border-black/10 bg-[#fffaf5]/90 px-5 py-4 shadow-[0_24px_60px_rgba(34,28,20,0.06)] backdrop-blur sm:px-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-[22px] bg-[#f2e8ff] text-lg font-semibold text-[#8d59e3] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
-                B
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#24362f] text-sm font-semibold uppercase tracking-[0.18em] text-white">
+                BZ
               </div>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#8d59e3]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#536458]">
                   Bizon
                 </p>
-                <p className="text-xl font-semibold tracking-[-0.04em] text-[#18131f]">
+                <p className="text-lg font-semibold tracking-[-0.03em] text-[#1d1a17]">
                   Building Materials
                 </p>
               </div>
             </div>
 
-            <nav className="hidden flex-wrap items-center gap-2 xl:flex">
+            <nav className="hidden items-center gap-6 lg:flex">
               {navigationItems.map((item) => (
                 <a
-                  key={item}
-                  href="#collections"
-                  className="rounded-full border border-[#ece5f8] bg-[#fcfbff] px-4 py-2 text-sm font-medium text-[#5f5770] transition-colors hover:border-[#d8c4fa] hover:text-[#8d59e3]"
+                  key={item.label}
+                  href={item.href}
+                  className="text-sm font-medium text-[#5d5a55] transition-colors hover:text-[#24362f]"
                 >
-                  {item}
+                  {item.label}
                 </a>
               ))}
             </nav>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href="#projects"
-                className="rounded-full border border-[#e7def7] px-5 py-3 text-sm font-medium text-[#4d445e] transition-colors hover:border-[#cdb4f8] hover:text-[#8d59e3]"
-              >
-                Project Desk
-              </a>
-              <a
-                href="#featured"
-                className="shine-button rounded-full bg-[#a46ef0] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(164,110,240,0.28)] transition-transform hover:-translate-y-0.5"
-              >
-                Explore Catalog
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <label className="search-shell flex w-full items-center gap-3 px-4 py-3 lg:max-w-[420px]">
-              <span className="text-sm font-semibold text-[#8d59e3]">Search</span>
-              <input
-                aria-label="Search materials"
-                className="w-full bg-transparent text-sm text-[#4e465f] outline-none placeholder:text-[#aaa3b8]"
-                placeholder="Хайх материал, брэнд, ангилал"
-                type="text"
-              />
-            </label>
-
-            <div className="flex flex-wrap items-center gap-2">
-              {["Trade pricing", "Interior focus", "Fast delivery"].map((item) => (
-                <span key={item} className="soft-chip">
-                  {item}
-                </span>
-              ))}
-            </div>
+            <SiteAuthActions />
           </div>
         </header>
 
-        <main className="flex flex-col gap-6">
-          <section className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-            <div
-              className="surface-panel hero-pattern fade-enter overflow-hidden px-6 py-8 sm:p-8 lg:p-10"
-              style={{ animationDelay: "160ms" }}
-            >
-              <span className="section-label">Landing Direction</span>
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_360px]">
+          <div className="rounded-[36px] border border-black/10 bg-[#fffaf5] px-6 py-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10 lg:p-12">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#536458]">
+              Ulaanbaatar showroom standard
+            </p>
 
-              <div className="mt-6 flex flex-wrap gap-2">
-                {heroNotes.map((item) => (
-                  <span key={item} className="soft-chip">
-                    {item}
-                  </span>
-                ))}
-              </div>
+            <h1 className="mt-6 max-w-4xl text-[clamp(2.9rem,7vw,5.8rem)] font-semibold leading-[0.94] tracking-[-0.07em] text-[#1d1a17]">
+              Төсөл болон өдөр тутмын худалдан авалтад зориулсан
+              <span className="block text-[#24362f]">
+                илүү цэгцтэй, илүү итгэл төрүүлэх
+              </span>
+              барилгын материалын нүүр хуудас
+            </h1>
 
-              <h1 className="mt-6 max-w-4xl text-[clamp(2.9rem,7vw,6.1rem)] font-semibold leading-[0.94] tracking-[-0.07em] text-[#1b1624]">
-                Барилгын материалын
-                <span className="block text-[#a46ef0]">илүү зөөлөн, илүү цэвэр</span>
-                онлайн туршлага
-              </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[#625f5a] sm:text-lg">
+              Bizon-ийн гол ангилал, project support, quote request болон
+              account entry-ийг нэг тайван бүтэц дээр төвлөрүүлж, одоогийн
+              хэт олон эффекттэй мэдрэмжийг илүү мэргэжлийн storefront болгон
+              зөөлрүүллээ.
+            </p>
 
-              <p className="mt-6 max-w-2xl text-base leading-8 text-[#685f77] sm:text-lg">
-                HAUSPLUS-ийн showroom мэдрэмжийг авч үлдээд, Bizon дээр илүү
-                round, илүү энгийн, илүү амьсгалтай landing page болгож
-                хөрвүүллээ. Цагаан үндсэн орчин дээр таны purple accent зөвхөн
-                support rhythm байдлаар ажиллана.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="#collections"
-                  className="shine-button rounded-full bg-[#a46ef0] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_20px_50px_rgba(164,110,240,0.28)] transition-transform hover:-translate-y-0.5"
-                >
-                  Shop by Category
-                </a>
-                <a
-                  href="#projects"
-                  className="rounded-full border border-[#e7def7] bg-white px-6 py-3.5 text-sm font-medium text-[#4d445e] transition-colors hover:border-[#cdb4f8] hover:text-[#8d59e3]"
-                >
-                  Request a Project Call
-                </a>
-              </div>
-
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
-                {heroStats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-[28px] border border-[#efe7fb] bg-white/85 p-5 shadow-[0_12px_30px_rgba(117,86,165,0.08)]"
-                  >
-                    <p className="text-3xl font-semibold tracking-[-0.05em] text-[#19131f]">
-                      {stat.value}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[#726a82]">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              <div
-                className="surface-panel fade-enter p-4 sm:p-5"
-                style={{ animationDelay: "240ms" }}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="section-label">Brand Mark</span>
-                  <span className="soft-chip">Hero-ready logo card</span>
-                </div>
-
-                <div className="paper-grid mt-4 rounded-[30px] bg-[linear-gradient(180deg,#fbf7ff_0%,#f1e7ff_100%)] p-4">
-                  <div className="float-slow rounded-[26px] bg-white p-4 shadow-[0_22px_60px_rgba(132,92,189,0.16)]">
-                    <Image
-                      src="/bizon-logo.png"
-                      alt="Bizon building materials logo"
-                      width={1408}
-                      height={768}
-                      priority
-                      className="h-auto w-full rounded-[22px]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div
-                  className="surface-panel fade-enter p-5"
-                  style={{ animationDelay: "300ms" }}
-                >
-                  <span className="section-label">Popular Lanes</span>
-                  <div className="mt-5 space-y-3">
-                    {["Wood + Boards", "Paint + Finish", "Bath + Plumbing", "Hardware + Tools"].map(
-                      (item, index) => (
-                        <div
-                          key={item}
-                          className="flex items-center justify-between rounded-[22px] bg-[#fcfbff] px-4 py-3"
-                        >
-                          <span className="text-sm font-medium text-[#4c4558]">
-                            {item}
-                          </span>
-                          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#a46ef0]">
-                            0{index + 1}
-                          </span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  id="projects"
-                  className="surface-panel fade-enter overflow-hidden p-5"
-                  style={{ animationDelay: "360ms" }}
-                >
-                  <span className="section-label">Trade Desk</span>
-                  <h3 className="mt-5 text-2xl font-semibold tracking-[-0.04em] text-[#18131f]">
-                    Built for projects, not only carts
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-[#6e667e]">
-                    Contractor болон designer flow-т shortlist, re-order, bulk
-                    sourcing, material notes гэсэн дараагийн алхмуудыг амархан
-                    нэмж болно.
-                  </p>
-
-                  <div className="mt-6 grid gap-3">
-                    {["Quote requests", "Saved boards", "Trade-only pricing"].map((item) => (
-                      <div
-                        key={item}
-                        className="rounded-[22px] border border-[#eadffd] bg-[#faf6ff] px-4 py-3 text-sm font-medium text-[#5c536b]"
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="grid gap-4 md:grid-cols-3">
-            {serviceCards.map((card, index) => (
-              <div
-                key={card.title}
-                className="surface-panel fade-enter p-6"
-                style={{ animationDelay: `${420 + index * 70}ms` }}
-              >
-                <span className="text-xs font-semibold uppercase tracking-[0.26em] text-[#a46ef0]">
-                  {card.index}
-                </span>
-                <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-[#18131f]">
-                  {card.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-[#6e667e]">
-                  {card.copy}
-                </p>
-              </div>
-            ))}
-          </section>
-
-          <section
-            id="collections"
-            className="surface-panel fade-enter p-6 sm:p-7 lg:p-8"
-            style={{ animationDelay: "620ms" }}
-          >
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <SectionIntro
-                eyebrow="Curated Categories"
-                title="HAUSPLUS-с санаа авсан, Bizon-д илүү тайван болгосон каталогийн эхлэл"
-                copy="Том ангиллуудыг showroom шиг мэдрэмжтэй card system болгон задалсан. Hover, filter, category page-уудыг үүн дээрээс дараа нь өргөжүүлж болно."
-              />
-
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
-                href="#featured"
-                className="rounded-full border border-[#e7def7] bg-white px-5 py-3 text-sm font-medium text-[#4d445e] transition-colors hover:border-[#cdb4f8] hover:text-[#8d59e3]"
+                href="#categories"
+                className="rounded-full bg-[#24362f] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#1c2924]"
               >
-                View Featured Picks
+                Ангилал үзэх
+              </a>
+              <a
+                href="#project-desk"
+                className="rounded-full border border-black/10 bg-white px-6 py-3.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+              >
+                Төслийн үйлчилгээ
               </a>
             </div>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {categoryCards.map((card) => (
-                <article
-                  key={card.title}
-                  className="rounded-[30px] border border-[#efe7fb] bg-white p-4 shadow-[0_18px_45px_rgba(127,95,177,0.08)] transition-transform duration-300 hover:-translate-y-1"
+            <dl className="mt-10 grid gap-4 sm:grid-cols-3">
+              {metrics.map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-[24px] border border-black/[0.08] bg-[#f6f1ea] p-5"
                 >
-                  <div
-                    className="h-40 rounded-[24px]"
-                    style={{ background: card.tone }}
-                  />
-                  <div className="mt-5 flex items-center justify-between gap-3">
-                    <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#19131f]">
+                  <dt className="text-sm leading-6 text-[#625f5a]">
+                    {item.label}
+                  </dt>
+                  <dd className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-[#1d1a17]">
+                    {item.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <aside className="rounded-[36px] bg-[#24362f] p-5 text-white shadow-[0_24px_60px_rgba(24,36,31,0.18)] sm:p-6">
+            <div className="rounded-[28px] bg-[#fbf6ef] p-4">
+              <Image
+                src="/bizon-logo.png"
+                alt="Bizon building materials logo"
+                width={1408}
+                height={768}
+                priority
+                className="h-auto w-full rounded-[20px]"
+              />
+            </div>
+
+            <div className="mt-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#b9c7bf]">
+                Quick focus
+              </p>
+              <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[#f7f2ea]">
+                Каталог, үнэ санал, project desk.
+              </p>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {supportPoints.map((point) => (
+                <div
+                  key={point}
+                  className="rounded-[22px] border border-white/[0.12] bg-white/[0.06] px-4 py-4 text-sm leading-6 text-[#d9e3de]"
+                >
+                  {point}
+                </div>
+              ))}
+            </div>
+          </aside>
+        </section>
+
+        <section
+          id="categories"
+          className="rounded-[36px] border border-black/10 bg-[#fffcf8] px-6 py-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-8 lg:p-10"
+        >
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <SectionHeading
+              eyebrow="Categories"
+              title="Эхний дэлгэцээс шууд ойлгогдох цэвэр ангиллын бүтэц"
+              description="Илүү professional мэдрэмж өгөхийн тулд category-first урсгал руу орж, хамгийн хэрэгтэй ангиллуудыг жижиг, уншихад амархан картуудаар үлдээлээ."
+            />
+
+            <a
+              href="#contact"
+              className="text-sm font-semibold text-[#24362f] underline decoration-[#c9b9a3] underline-offset-4"
+            >
+              Trade account нээх
+            </a>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {categoryCards.map((card) => (
+              <article
+                key={card.title}
+                className="rounded-[28px] border border-black/[0.08] bg-white p-5"
+              >
+                <div
+                  className="h-3 rounded-full"
+                  style={{ background: card.tone }}
+                />
+                <div className="mt-5 flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#1d1a17]">
                       {card.title}
                     </h3>
-                    <span className="rounded-full bg-[#f3ebff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#8d59e3]">
-                      {card.meta}
-                    </span>
+                    <p className="mt-3 text-sm leading-7 text-[#625f5a]">
+                      {card.description}
+                    </p>
                   </div>
-                  <p className="mt-3 text-sm leading-7 text-[#6e667e]">
-                    {card.blurb}
+                  <span className="rounded-full bg-[#eff2ed] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#536458]">
+                    {card.meta}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section
+          id="project-desk"
+          className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(300px,0.95fr)]"
+        >
+          <div className="rounded-[36px] border border-black/10 bg-[#fffaf5] px-6 py-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-8 lg:p-10">
+            <SectionHeading
+              eyebrow="Project Desk"
+              title="Нүүр хуудас дээр project workflow-ийг илүү тод болголоо"
+              description="Retail browse болон B2B sourcing хоёрын аль алинд нь ойлгомжтой байх бүтэц сонгож, хэт олон промо блокийн оронд үйлчилгээний үндсэн алхмуудыг үлдээлээ."
+            />
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {serviceSteps.map((step, index) => (
+                <article
+                  key={step.title}
+                  className="rounded-[24px] border border-black/[0.08] bg-[#f6f1ea] p-5"
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
+                    0{index + 1}
+                  </p>
+                  <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-[#1d1a17]">
+                    {step.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-[#625f5a]">
+                    {step.copy}
                   </p>
                 </article>
               ))}
             </div>
-          </section>
+          </div>
 
-          <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-            <div
-              id="featured"
-              className="surface-panel fade-enter p-6 sm:p-7 lg:p-8"
-              style={{ animationDelay: "720ms" }}
-            >
-              <SectionIntro
-                eyebrow="Featured Materials"
-                title="More editorial, less clutter"
-                copy="Landing дээр яг энэ шиг curated cards ашиглавал premium feel илүү хүчтэй гарна. Product image оронд одоохондоо material mood blocks ашиглаж visual hierarchy-г тогтоолоо."
-              />
+          <div className="rounded-[36px] border border-black/10 bg-[#f1ece4] px-6 py-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-8 lg:p-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
+              Featured Lines
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#1d1a17]">
+              Илүү цэгцтэй бүтээгдэхүүний танилцуулга
+            </h2>
+            <p className="mt-4 text-base leading-7 text-[#625f5a]">
+              Өнгө, gradient, promo блокыг цөөлж, үнэ болон хэрэглээг нь
+              ойлгомжтой унших форматаар үлдээв.
+            </p>
 
-              <div className="mt-8 grid gap-4 md:grid-cols-2">
-                {featuredProducts.map((product) => (
-                  <article
-                    key={product.name}
-                    className="rounded-[30px] border border-[#efe7fb] bg-[#fefcff] p-4 shadow-[0_18px_40px_rgba(127,95,177,0.08)]"
-                  >
-                    <div
-                      className="h-44 rounded-[24px]"
-                      style={{ background: product.art }}
-                    />
-                    <div className="mt-5 flex items-center justify-between gap-3">
-                      <span className="rounded-full bg-[#f3ebff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#8d59e3]">
-                        {product.chip}
-                      </span>
-                      <span className="text-sm font-semibold text-[#19131f]">
-                        {product.price}
-                      </span>
-                    </div>
-                    <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-[#18131f]">
-                      {product.name}
-                    </h3>
-                    <p className="mt-3 text-sm leading-7 text-[#6e667e]">
-                      {product.detail}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            <div
-              className="surface-panel fade-enter p-6 sm:p-7 lg:p-8"
-              style={{ animationDelay: "820ms" }}
-            >
-              <SectionIntro
-                eyebrow="By Project"
-                title="Category-only биш, space-based merchandising"
-                copy="HAUSPLUS-ийн inspiration-ийг шууд хуулалгүйгээр, төслөөр нь browse хийдэг илүү орчин үеийн урсгал нэмлээ."
-              />
-
-              <div className="mt-8 space-y-4">
-                {projectZones.map((zone, index) => (
-                  <article
-                    key={zone.title}
-                    className={`rounded-[30px] border border-[#efe7fb] bg-white p-5 shadow-[0_18px_40px_rgba(127,95,177,0.08)] ${
-                      index === 0 ? "float-slower" : ""
-                    }`}
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[#18131f]">
-                        {zone.title}
+            <div className="mt-8 space-y-3">
+              {featuredLines.map((item) => (
+                <div
+                  key={item.name}
+                  className="rounded-[24px] border border-black/[0.08] bg-white px-5 py-4"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-[#1d1a17]">
+                        {item.name}
                       </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {zone.points.map((point) => (
-                          <span key={point} className="soft-chip">
-                            {point}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="mt-1 text-sm leading-6 text-[#625f5a]">
+                        {item.detail}
+                      </p>
                     </div>
-                    <p className="mt-4 text-sm leading-7 text-[#6e667e]">
-                      {zone.copy}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          <section
-            className="surface-panel fade-enter cta-glow overflow-hidden p-6 sm:p-8 lg:p-10"
-            style={{ animationDelay: "920ms" }}
-          >
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
-              <div>
-                <span className="section-label">Next Step Ready</span>
-                <h2 className="mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.06em] text-[#18131f] sm:text-5xl">
-                  This can grow into a full store system without losing the calm
-                  homepage feel.
-                </h2>
-                <p className="mt-5 max-w-2xl text-base leading-8 text-[#685f77] sm:text-lg">
-                  Хэрвээ энэ direction таалагдвал дараагийн алхмаар category page,
-                  product card system, cart entry points, Clerk-aware account
-                  states болон mobile navigation-г яг энэ визуал хэл дээр үргэлжлүүлнэ.
-                </p>
-
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {footerLinks.map((item) => (
-                    <span key={item} className="soft-chip">
-                      {item}
+                    <span className="text-sm font-semibold text-[#24362f]">
+                      {item.price}
                     </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="paper-grid rounded-[34px] bg-[linear-gradient(180deg,#fbf7ff_0%,#f3eaff_100%)] p-4">
-                <div className="rounded-[28px] bg-white p-4 shadow-[0_24px_60px_rgba(127,95,177,0.14)]">
-                  <div className="rounded-[24px] bg-[#fbf8ff] p-5">
-                    <Image
-                      src="/bizon-logo.png"
-                      alt="Bizon logo preview"
-                      width={1408}
-                      height={768}
-                      className="h-auto w-full rounded-[20px]"
-                    />
-                  </div>
-                  <div className="mt-5 rounded-[24px] bg-[#f7f1ff] px-5 py-4">
-                    <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#8d59e3]">
-                      Design note
-                    </p>
-                    <p className="mt-3 text-sm leading-7 text-[#60576f]">
-                      White-first canvas, softened geometry, restrained purple
-                      support, editorial product framing.
-                    </p>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          </section>
-        </main>
+          </div>
+        </section>
+
+        <section
+          id="contact"
+          className="rounded-[36px] bg-[#24362f] px-6 py-8 text-[#f7f2ea] shadow-[0_24px_60px_rgba(24,36,31,0.18)] sm:p-8 lg:p-10"
+        >
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#b9c7bf]">
+                Next Step
+              </p>
+              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#f7f2ea] sm:text-5xl">
+                Бараа болон төслийн урсгалыг нэг цэвэр нүүр хуудсаар эхлүүлэхэд
+                бэлэн.
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-[#dbe5df] sm:text-lg">
+                Дараагийн шатанд category pages, product cards, mobile nav,
+                cart entry points болон Clerk-aware account states-ийг яг энэ
+                илүү restrained хэлээр үргэлжлүүлж болно.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/sign-up"
+                className="rounded-full bg-[#f7f2ea] px-6 py-3.5 text-sm font-semibold text-[#24362f] transition-colors hover:bg-white"
+              >
+                Эхлэх
+              </Link>
+              <Link
+                href="/sign-in"
+                className="rounded-full border border-white/[0.16] px-6 py-3.5 text-sm font-medium text-white transition-colors hover:border-white/[0.32] hover:bg-white/[0.06]"
+              >
+                Нэвтрэх
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
