@@ -25,7 +25,7 @@ function formatDate(date: Date | null) {
 function getStatusStyles(status: ProductStatus) {
   switch (status) {
     case ProductStatus.ACTIVE:
-      return "bg-[#eef5ec] text-[#27432e]";
+      return "bg-[#efe4fb] text-[#6d36ad]";
     case ProductStatus.ARCHIVED:
       return "bg-[#ede8e2] text-[#655f58]";
     default:
@@ -136,13 +136,13 @@ export default async function AdminProductsPage({
           <div className="flex flex-wrap gap-3">
             <Link
               href="/admin/products/new"
-              className="rounded-full bg-[#24362f] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#1c2924]"
+              className="rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
             >
               Add Product
             </Link>
             <Link
               href="/admin/products/template"
-              className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+              className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
             >
               Download Template
             </Link>
@@ -180,7 +180,7 @@ export default async function AdminProductsPage({
                 name="q"
                 defaultValue={query}
                 placeholder="name, slug, or SKU"
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -191,7 +191,7 @@ export default async function AdminProductsPage({
               <select
                 name="status"
                 defaultValue={statusFilter ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
                 <option value="">All statuses</option>
                 {Object.values(ProductStatus).map((status) => (
@@ -204,7 +204,7 @@ export default async function AdminProductsPage({
 
             <button
               type="submit"
-              className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-semibold text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+              className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-semibold text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
             >
               Filter
             </button>
@@ -285,7 +285,7 @@ export default async function AdminProductsPage({
                           <div className="flex min-w-[220px] flex-wrap justify-end gap-3">
                             <Link
                               href={`/admin/products/${product.id}`}
-                              className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+                              className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
                             >
                               Edit
                             </Link>
@@ -335,17 +335,36 @@ export default async function AdminProductsPage({
                 name="file"
                 accept=".xlsx,.xls,.csv"
                 required
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] file:mr-4 file:rounded-full file:border-0 file:bg-[#24362f] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] file:mr-4 file:rounded-full file:border-0 file:bg-[#8e55cf] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
               />
             </label>
 
             <div className="rounded-[24px] border border-black/10 bg-white px-5 py-4 text-sm leading-7 text-[#4f4a43]">
-              <p>Supported columns:</p>
+              <p>How it works:</p>
+              <p>
+                Use a sheet named `Products`, or let the importer read the first
+                sheet in the workbook.
+              </p>
+              <p>
+                If the `sku` already exists, that row updates the product. If
+                there is no `sku` match, the importer tries `slug`. If neither
+                matches, it creates a new product.
+              </p>
+              <p>
+                Category lists can be separated with `|`, commas, or new lines.
+                Image rows should use `url | alt text`.
+              </p>
+              <p>
+                Sheets with Mongolian headers like `Бараа нэр`, `Ангилал`,
+                `Хэмжээ`, and `Тайлбар` are also supported.
+              </p>
+              <p className="mt-4">Supported columns:</p>
               <p>
                 `name`, `sku`, `slug`, `status`, `brand`, `primaryCategory`,
                 `categories`, `shortDescription`, `description`, `currency`,
                 `baseUnit`, `trackInventory`, `allowBackorder`, `isFeatured`,
-                `isNewArrival`, `seoTitle`, `seoDescription`, `publishedAt`
+                `isNewArrival`, `seoTitle`, `seoDescription`, `publishedAt`,
+                `images`
               </p>
             </div>
 
@@ -356,7 +375,7 @@ export default async function AdminProductsPage({
               />
               <Link
                 href="/admin/products/template"
-                className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+                className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
               >
                 Download template
               </Link>

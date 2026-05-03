@@ -44,6 +44,8 @@ export async function createProductAction(
     revalidatePath("/admin");
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${product.id}`);
+    revalidatePath("/");
+    revalidatePath("/products");
 
     redirect(
       buildRedirectUrl(`/admin/products/${product.id}`, {
@@ -75,6 +77,8 @@ export async function updateProductAction(
     revalidatePath("/admin");
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${productId}`);
+    revalidatePath("/");
+    revalidatePath("/products");
 
     redirect(
       buildRedirectUrl(`/admin/products/${productId}`, {
@@ -99,6 +103,8 @@ export async function deleteProductAction(productId: string) {
     revalidatePath("/admin");
     revalidatePath("/admin/products");
     revalidatePath(`/admin/products/${productId}`);
+    revalidatePath("/");
+    revalidatePath("/products");
 
     redirect(
       buildRedirectUrl("/admin/products", {
@@ -137,6 +143,8 @@ export async function importProductsAction(formData: FormData) {
 
     revalidatePath("/admin");
     revalidatePath("/admin/products");
+    revalidatePath("/");
+    revalidatePath("/products");
 
     redirect(
       buildRedirectUrl("/admin/products", {

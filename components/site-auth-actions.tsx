@@ -62,15 +62,15 @@ export function SiteAuthActions() {
       <div className="flex flex-wrap items-center gap-3">
         <Link
           href="/sign-in"
-          className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+          className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#312836] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
         >
-          Нэвтрэх
+          Sign in
         </Link>
         <Link
           href="/sign-up"
-          className="rounded-full bg-[#24362f] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1c2924]"
+          className="rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
         >
-          Бүртгүүлэх
+          Create account
         </Link>
       </div>
     );
@@ -82,7 +82,7 @@ export function SiteAuthActions() {
         <Link
           href="/admin"
           prefetch={false}
-          className="rounded-full bg-[#24362f] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1c2924]"
+          className="rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
         >
           Admin Panel
         </Link>

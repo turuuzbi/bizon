@@ -173,9 +173,9 @@ export default async function AdminPage() {
       >
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-              Overview
-            </p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
+                Overview
+              </p>
             <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#1d1a17] sm:text-5xl">
               Real data, server-side role checks, and a ready admin foundation.
             </h2>
@@ -194,7 +194,7 @@ export default async function AdminPage() {
             </div>
             <Link
               href="/admin/products"
-              className="inline-flex rounded-full bg-[#24362f] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1c2924]"
+              className="inline-flex rounded-full bg-[#8e55cf] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
             >
               Open product operations
             </Link>
@@ -245,7 +245,7 @@ export default async function AdminPage() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <span className="rounded-full bg-[#eff2ed] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#536458]">
+                      <span className="rounded-full bg-[#efe4fb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
                         {product.status}
                       </span>
                       {product.isFeatured ? (
@@ -295,7 +295,7 @@ export default async function AdminPage() {
                         {formatMoney(order.totalAmount.toString())}
                       </p>
                     </div>
-                    <span className="rounded-full bg-[#eff2ed] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#536458]">
+                    <span className="rounded-full bg-[#efe4fb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
                       {order.status}
                     </span>
                   </div>
@@ -315,17 +315,17 @@ export default async function AdminPage() {
 
       <section
         id="customers"
-        className="rounded-[36px] bg-[#24362f] p-8 text-[#f7f2ea] shadow-[0_24px_60px_rgba(24,36,31,0.18)] sm:p-10"
+        className="rounded-[36px] bg-[linear-gradient(180deg,#4a2a70_0%,#7d45c1_100%)] p-8 text-[#f8f2ff] shadow-[0_24px_60px_rgba(77,41,116,0.24)] sm:p-10"
       >
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#b9c7bf]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#dccbf4]">
               Customer access
             </p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#f7f2ea] sm:text-5xl">
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#f8f2ff] sm:text-5xl">
               Recent users synced from Clerk into Prisma
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-[#dbe5df] sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-[#ece1fb] sm:text-lg">
               New authenticated users are created in the local `User` table on
               first access, then the admin check runs against `User.role`.
             </p>
@@ -343,34 +343,34 @@ export default async function AdminPage() {
               return (
                 <article
                   key={user.id}
-                  className="rounded-[24px] border border-white/[0.12] bg-white/[0.06] px-5 py-4"
+                  className="rounded-[24px] border border-white/[0.12] bg-white/[0.08] px-5 py-4"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-[#f7f2ea]">
+                      <h3 className="text-lg font-semibold text-[#f8f2ff]">
                         {fullName}
                       </h3>
-                      <p className="mt-1 text-sm leading-6 text-[#dbe5df]">
+                      <p className="mt-1 text-sm leading-6 text-[#ece1fb]">
                         {user.email ?? "No email on file"}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <span className="rounded-full bg-[#f7f2ea] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#24362f]">
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
                         {user.role}
                       </span>
-                      <span className="rounded-full border border-white/[0.16] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#f7f2ea]">
+                      <span className="rounded-full border border-white/[0.16] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#f8f2ff]">
                         {user.isActive ? "Active" : "Disabled"}
                       </span>
                     </div>
                   </div>
-                  <p className="mt-3 text-sm text-[#dbe5df]">
+                  <p className="mt-3 text-sm text-[#ece1fb]">
                     Joined {formatDate(user.createdAt)}
                   </p>
                 </article>
               );
             })
           ) : (
-            <div className="rounded-[24px] border border-white/[0.12] bg-white/[0.06] px-5 py-6 text-sm leading-7 text-[#dbe5df]">
+            <div className="rounded-[24px] border border-white/[0.12] bg-white/[0.08] px-5 py-6 text-sm leading-7 text-[#ece1fb]">
               No synced users yet. After a user signs in with Clerk, they will
               appear here automatically.
             </div>

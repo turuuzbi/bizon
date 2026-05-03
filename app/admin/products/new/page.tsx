@@ -20,7 +20,7 @@ export default async function NewProductPage({
       <div className="flex flex-wrap items-center gap-3">
         <Link
           href="/admin/products"
-          className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#24362f] hover:text-[#24362f]"
+          className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
         >
           Back to products
         </Link>

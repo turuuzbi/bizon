@@ -35,6 +35,12 @@ type ProductFormProps = {
     brandId: string | null;
     primaryCategoryId: string | null;
     productCategories: { categoryId: string }[];
+    images: {
+      url: string;
+      altText: string | null;
+      isPrimary: boolean;
+      position: number;
+    }[];
   } | null;
   options: {
     brands: { id: string; name: string; isActive: boolean }[];
@@ -58,6 +64,26 @@ function formatDateTimeLocal(value: Date | null | undefined) {
   const localDate = new Date(date.getTime() - offset * 60_000);
 
   return localDate.toISOString().slice(0, 16);
+}
+
+function formatImageEntriesValue(
+  images:
+    | {
+        url: string;
+        altText: string | null;
+        isPrimary: boolean;
+        position: number;
+      }[]
+    | undefined
+    | null,
+) {
+  return (images ?? [])
+    .slice()
+    .sort((left, right) => left.position - right.position)
+    .map((image) =>
+      image.altText?.trim() ? `${image.url} | ${image.altText.trim()}` : image.url,
+    )
+    .join("\n");
 }
 
 export function ProductForm({
@@ -105,7 +131,7 @@ export function ProductForm({
                 name="name"
                 required
                 defaultValue={product?.name ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -115,7 +141,7 @@ export function ProductForm({
                 name="slug"
                 defaultValue={product?.slug ?? ""}
                 placeholder="leave blank to generate from name"
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -124,7 +150,7 @@ export function ProductForm({
               <input
                 name="sku"
                 defaultValue={product?.sku ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -135,7 +161,7 @@ export function ProductForm({
               <input
                 name="currency"
                 defaultValue={product?.currency ?? "MNT"}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm uppercase text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm uppercase text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -144,7 +170,7 @@ export function ProductForm({
               <select
                 name="status"
                 defaultValue={product?.status ?? ProductStatus.DRAFT}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
                 {PRODUCT_STATUS_OPTIONS.map((status) => (
                   <option key={status} value={status}>
@@ -161,7 +187,7 @@ export function ProductForm({
               <select
                 name="baseUnit"
                 defaultValue={product?.baseUnit ?? UnitType.PIECE}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
                 {UNIT_TYPE_OPTIONS.map((unit) => (
                   <option key={unit} value={unit}>
@@ -180,7 +206,7 @@ export function ProductForm({
               name="shortDescription"
               rows={3}
               defaultValue={product?.shortDescription ?? ""}
-              className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+              className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
             />
           </label>
 
@@ -192,7 +218,7 @@ export function ProductForm({
               name="description"
               rows={8}
               defaultValue={product?.description ?? ""}
-              className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+              className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
             />
           </label>
         </section>
@@ -204,7 +230,7 @@ export function ProductForm({
               <select
                 name="brandId"
                 defaultValue={product?.brandId ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
                 <option value="">No brand selected</option>
                 {options.brands.map((brand) => (
@@ -223,7 +249,7 @@ export function ProductForm({
               <input
                 name="newBrandName"
                 placeholder="optional: create or match a brand by name"
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -234,7 +260,7 @@ export function ProductForm({
               <select
                 name="primaryCategoryId"
                 defaultValue={product?.primaryCategoryId ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
                 <option value="">No primary category</option>
                 {options.categories.map((category) => (
@@ -263,7 +289,7 @@ export function ProductForm({
                       name="categoryIds"
                       value={category.id}
                       defaultChecked={selectedCategoryIds.has(category.id)}
-                      className="mt-1 h-4 w-4 rounded border-black/20 text-[#24362f] focus:ring-[#24362f]"
+                      className="mt-1 h-4 w-4 rounded border-black/20 text-[#8e55cf] focus:ring-[#8e55cf]"
                     />
                     <span className="text-sm leading-6 text-[#3f3a35]">
                       {category.label}
@@ -287,9 +313,79 @@ export function ProductForm({
             <input
               name="newCategories"
               placeholder="e.g. Tile, Bathroom, Electrical"
-              className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+              className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
             />
           </label>
+        </section>
+
+        <section className="rounded-[36px] border border-black/10 bg-[#fffaf5] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,0.7fr)]">
+            <label className="block">
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                Product image entries
+              </span>
+              <textarea
+                name="imageEntries"
+                rows={8}
+                defaultValue={formatImageEntriesValue(product?.images)}
+                placeholder={
+                  "https://example.com/chair-front.jpg | Front view\nhttps://example.com/chair-side.jpg | Side view"
+                }
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
+              />
+            </label>
+
+            <div className="rounded-[28px] border border-black/10 bg-[#fffcf8] p-5 text-sm leading-7 text-[#4f4a43]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
+                Image guide
+              </p>
+              <p className="mt-3">
+                Add one line per image. Use the format `image-url | alt text`.
+                The first valid line becomes the main catalog image.
+              </p>
+              <p className="mt-3">
+                This setup keeps things simple for now: no storage config, just
+                image URLs you can manage quickly while building the catalog.
+              </p>
+            </div>
+          </div>
+
+          {product?.images.length ? (
+            <div className="mt-6">
+              <p className="text-sm font-semibold text-[#1d1a17]">
+                Current image preview
+              </p>
+              <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
+                {product.images
+                  .slice()
+                  .sort((left, right) => left.position - right.position)
+                  .map((image) => (
+                    <div
+                      key={`${image.url}-${image.position}`}
+                      className="min-w-[180px]"
+                    >
+                      <div
+                        role="img"
+                        aria-label={image.altText ?? product.name}
+                        className="h-36 rounded-[24px] border border-black/10 bg-white"
+                        style={{
+                          backgroundImage: `url("${image.url}")`,
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "contain",
+                        }}
+                      />
+                      <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#625f5a]">
+                        {image.isPrimary ? "Primary" : `Image ${image.position + 1}`}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-[#4f4a43]">
+                        {image.altText ?? image.url}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          ) : null}
         </section>
 
         <section className="rounded-[36px] border border-black/10 bg-[#f1ece4] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
@@ -302,7 +398,7 @@ export function ProductForm({
                 type="datetime-local"
                 name="publishedAt"
                 defaultValue={formatDateTimeLocal(product?.publishedAt)}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -337,7 +433,7 @@ export function ProductForm({
                     type="checkbox"
                     name={item.name}
                     defaultChecked={item.checked}
-                    className="h-4 w-4 rounded border-black/20 text-[#24362f] focus:ring-[#24362f]"
+                    className="h-4 w-4 rounded border-black/20 text-[#8e55cf] focus:ring-[#8e55cf]"
                   />
                   {item.label}
                 </label>
@@ -353,7 +449,7 @@ export function ProductForm({
               <input
                 name="seoTitle"
                 defaultValue={product?.seoTitle ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
@@ -365,7 +461,7 @@ export function ProductForm({
                 name="seoDescription"
                 rows={3}
                 defaultValue={product?.seoDescription ?? ""}
-                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#24362f]"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
           </div>

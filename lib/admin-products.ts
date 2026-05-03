@@ -34,11 +34,20 @@ type ProductMutationInput = {
   categoryNames?: string[];
   primaryCategoryId?: string | null;
   primaryCategoryName?: string | null;
+  imageEntries?: ProductImageInput[];
+  metadata?: Prisma.InputJsonValue;
 };
 
 type ResolvedProductInput = {
   data: Prisma.ProductUncheckedCreateInput;
   categoryIds: string[];
+};
+
+type ProductImageInput = {
+  url: string;
+  altText: string | null;
+  position: number;
+  isPrimary: boolean;
 };
 
 type SpreadsheetImportResult = {
@@ -60,12 +69,58 @@ function splitList(value: string | null | undefined) {
     .filter(Boolean);
 }
 
+function parseImageEntriesText(value: string | null | undefined) {
+  const rows = (value ?? "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const seen = new Set<string>();
+  const entries: ProductImageInput[] = [];
+
+  for (const row of rows) {
+    const [urlPart, ...altParts] = row.split("|");
+    const url = cleanText(urlPart);
+
+    if (!url || seen.has(url)) {
+      continue;
+    }
+
+    seen.add(url);
+    entries.push({
+      url,
+      altText: cleanText(altParts.join("|")),
+      position: entries.length,
+      isPrimary: entries.length === 0,
+    });
+  }
+
+  return entries;
+}
+
 function uniqueValues(values: string[]) {
   return [...new Set(values)];
 }
 
 function normalizeHeader(value: string) {
-  return value.toLowerCase().replace(/[\s_-]+/g, "");
+  return value
+    .toLowerCase()
+    .normalize("NFKC")
+    .replace(/[^\p{L}\p{N}]+/gu, "");
+}
+
+function headerMatches(header: string, alias: string) {
+  const normalizedHeader = normalizeHeader(header);
+  const normalizedAlias = normalizeHeader(alias);
+
+  if (!normalizedHeader || !normalizedAlias) {
+    return false;
+  }
+
+  return (
+    normalizedHeader === normalizedAlias ||
+    normalizedHeader.includes(normalizedAlias) ||
+    normalizedAlias.includes(normalizedHeader)
+  );
 }
 
 function parseBoolean(value: unknown, fallback = false) {
@@ -108,6 +163,25 @@ function parseDateValue(value: unknown) {
   }
 
   return date;
+}
+
+function parseNumberValue(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.replace(/[,\s]/g, "").replace(/[^\d.-]/g, "");
+
+    if (!normalized) {
+      return null;
+    }
+
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
 }
 
 function slugify(value: string) {
@@ -322,6 +396,7 @@ async function resolveProductInput(
       brandId: brand?.id ?? null,
       primaryCategoryId: categories.primaryCategoryId,
       currency,
+      metadata: input.metadata,
       baseUnit,
       trackInventory: input.trackInventory ?? true,
       allowBackorder: input.allowBackorder ?? false,
@@ -370,14 +445,13 @@ export function parseManualProductFormData(formData: FormData): ProductMutationI
     categoryNames: splitList(formData.get("newCategories")?.toString()),
     primaryCategoryId: formData.get("primaryCategoryId")?.toString() ?? "",
     primaryCategoryName: "",
+    imageEntries: parseImageEntriesText(formData.get("imageEntries")?.toString()),
   };
 }
 
 function getRowValue(row: Record<string, unknown>, aliases: string[]) {
-  const normalizedAliases = aliases.map(normalizeHeader);
-
   for (const [key, value] of Object.entries(row)) {
-    if (normalizedAliases.includes(normalizeHeader(key))) {
+    if (aliases.some((alias) => headerMatches(key, alias))) {
       return value;
     }
   }
@@ -391,21 +465,66 @@ function rowHasContent(row: Record<string, unknown>) {
 
 function parseSpreadsheetRow(row: Record<string, unknown>): ProductMutationInput {
   const statusValue = cleanText(
-    getRowValue(row, ["status"])?.toString() ?? ProductStatus.DRAFT,
+    getRowValue(row, ["status", "төлөв"])?.toString() ?? ProductStatus.DRAFT,
   );
+  const sizeValue =
+    getRowValue(row, ["size", "dimension", "хэмжээ"])?.toString() ?? "";
   const baseUnitValue = cleanText(
-    getRowValue(row, ["baseUnit", "unit", "base_unit"])?.toString() ??
+    getRowValue(row, ["baseUnit", "unit", "base_unit", "нэгж"])?.toString() ??
       UnitType.PIECE,
   );
+  const unitPrice = parseNumberValue(
+    getRowValue(row, [
+      "unitPrice",
+      "price",
+      "unit_price",
+      "Үнэ (₮) нэгжгүй",
+      "Үнэ нэгжгүй",
+      "Үнэ",
+    ]),
+  );
+  const quantity = parseNumberValue(
+    getRowValue(row, ["quantity", "qty", "Тоо ширхэг", "Тоо"]),
+  );
+  const lineTotal = parseNumberValue(
+    getRowValue(row, ["lineTotal", "total", "Нийт дүн (₮)", "Нийт дүн"]),
+  );
+  const metadataEntries: Record<string, string | number> = {};
+
+  if (unitPrice !== null) {
+    metadataEntries.importedUnitPriceMnt = unitPrice;
+  }
+
+  if (quantity !== null) {
+    metadataEntries.importedQuantity = quantity;
+  }
+
+  if (lineTotal !== null) {
+    metadataEntries.importedLineTotalMnt = lineTotal;
+  }
 
   return {
-    name: getRowValue(row, ["name", "productName", "product_name"])?.toString() ?? "",
+    name:
+      getRowValue(row, [
+        "name",
+        "productName",
+        "product_name",
+        "product",
+        "Бараа нэр",
+      ])?.toString() ?? "",
     slugInput: getRowValue(row, ["slug"])?.toString() ?? "",
-    sku: getRowValue(row, ["sku"])?.toString() ?? "",
+    sku: getRowValue(row, ["sku", "code", "productCode", "код"])?.toString() ?? "",
     shortDescription:
-      getRowValue(row, ["shortDescription", "short_description"])?.toString() ?? "",
+      getRowValue(row, [
+        "shortDescription",
+        "short_description",
+        "size",
+        "dimension",
+        "Хэмжээ",
+      ])?.toString() ?? "",
     description:
-      getRowValue(row, ["description", "details"])?.toString() ?? "",
+      getRowValue(row, ["description", "details", "note", "notes", "Тайлбар"])?.toString() ??
+      "",
     status: PRODUCT_STATUS_OPTIONS.includes(statusValue as ProductStatus)
       ? (statusValue as ProductStatus)
       : ProductStatus.DRAFT,
@@ -435,9 +554,16 @@ function parseSpreadsheetRow(row: Record<string, unknown>): ProductMutationInput
     publishedAt: parseDateValue(
       getRowValue(row, ["publishedAt", "published_at", "publishDate"]),
     ),
-    brandName: getRowValue(row, ["brand", "brandName", "brand_name"])?.toString() ?? "",
+    brandName:
+      getRowValue(row, ["brand", "brandName", "brand_name", "брэнд"])?.toString() ??
+      "",
     categoryNames: splitList(
-      getRowValue(row, ["categories", "categoryList", "category_list"])?.toString(),
+      getRowValue(row, [
+        "categories",
+        "categoryList",
+        "category_list",
+        "Ангилал",
+      ])?.toString(),
     ),
     primaryCategoryName:
       getRowValue(row, [
@@ -445,12 +571,83 @@ function parseSpreadsheetRow(row: Record<string, unknown>): ProductMutationInput
         "primary_category",
         "mainCategory",
         "main_category",
+        "Ангилал",
       ])?.toString() ?? "",
+    imageEntries: parseImageEntriesText(
+      getRowValue(row, ["images", "imageUrls", "image_urls"])?.toString(),
+    ),
+    metadata:
+      Object.keys(metadataEntries).length > 0 || cleanText(sizeValue)
+        ? ({
+            importSource: "spreadsheet",
+            importedSize: cleanText(sizeValue),
+            ...metadataEntries,
+          } as Prisma.InputJsonValue)
+        : undefined,
   };
+}
+
+function findWorksheetHeaderRowIndex(worksheet: XLSX.WorkSheet) {
+  const rows = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
+    header: 1,
+    defval: "",
+  });
+
+  for (const [index, row] of rows.entries()) {
+    const cells = row
+      .map((value) => String(value ?? "").trim())
+      .filter(Boolean);
+
+    if (cells.length < 2) {
+      continue;
+    }
+
+    const hasNameColumn = cells.some((cell) =>
+      ["name", "productName", "product_name", "Бараа нэр"].some((alias) =>
+        headerMatches(cell, alias),
+      ),
+    );
+    const hasCategoryColumn = cells.some((cell) =>
+      ["categories", "primaryCategory", "Ангилал"].some((alias) =>
+        headerMatches(cell, alias),
+      ),
+    );
+
+    if (hasNameColumn && hasCategoryColumn) {
+      return index;
+    }
+  }
+
+  return 0;
+}
+
+async function syncProductImages(
+  tx: Prisma.TransactionClient,
+  productId: string,
+  imageEntries: ProductImageInput[],
+) {
+  await tx.productImage.deleteMany({
+    where: { productId },
+  });
+
+  if (imageEntries.length === 0) {
+    return;
+  }
+
+  await tx.productImage.createMany({
+    data: imageEntries.map((image, index) => ({
+      productId,
+      url: image.url,
+      altText: image.altText,
+      position: index,
+      isPrimary: index === 0,
+    })),
+  });
 }
 
 export async function createProduct(input: ProductMutationInput) {
   const resolved = await resolveProductInput(input);
+  const imageEntries = input.imageEntries ?? [];
 
   return prisma.$transaction(async (tx) => {
     const product = await tx.product.create({
@@ -467,6 +664,8 @@ export async function createProduct(input: ProductMutationInput) {
         skipDuplicates: true,
       });
     }
+
+    await syncProductImages(tx, product.id, imageEntries);
 
     return product;
   });
@@ -489,6 +688,7 @@ export async function updateProduct(productId: string, input: ProductMutationInp
     productId,
     currentPublishedAt: existing.publishedAt,
   });
+  const imageEntries = input.imageEntries ?? [];
 
   return prisma.$transaction(async (tx) => {
     const product = await tx.product.update({
@@ -510,6 +710,8 @@ export async function updateProduct(productId: string, input: ProductMutationInp
         skipDuplicates: true,
       });
     }
+
+    await syncProductImages(tx, productId, imageEntries);
 
     return product;
   });
@@ -544,6 +746,7 @@ export async function deleteProduct(productId: string) {
 async function upsertProductFromImport(input: ProductMutationInput) {
   const sku = cleanText(input.sku);
   const slug = cleanText(input.slugInput);
+  const name = cleanText(input.name);
 
   let existing: Pick<Product, "id" | "publishedAt"> | null = null;
 
@@ -557,6 +760,25 @@ async function upsertProductFromImport(input: ProductMutationInput) {
   if (!existing && slug) {
     existing = await prisma.product.findUnique({
       where: { slug },
+      select: { id: true, publishedAt: true },
+    });
+  }
+
+  if (!existing && name) {
+    existing = await prisma.product.findFirst({
+      where: {
+        OR: [
+          {
+            slug: slugify(name),
+          },
+          {
+            name: {
+              equals: name,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
       select: { id: true, publishedAt: true },
     });
   }
@@ -586,7 +808,9 @@ export async function importProductsFromWorkbook(
   }
 
   const worksheet = workbook.Sheets[sheetName];
+  const headerRowIndex = findWorksheetHeaderRowIndex(worksheet);
   const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet, {
+    range: headerRowIndex,
     defval: "",
   });
 
@@ -596,7 +820,7 @@ export async function importProductsFromWorkbook(
   const errors: string[] = [];
 
   for (const [index, row] of rows.entries()) {
-    const rowNumber = index + 2;
+    const rowNumber = headerRowIndex + index + 2;
 
     if (!rowHasContent(row)) {
       skipped += 1;
@@ -701,6 +925,15 @@ export async function getEditableProduct(productId: string) {
       productCategories: {
         select: {
           categoryId: true,
+        },
+      },
+      images: {
+        orderBy: [{ isPrimary: "desc" }, { position: "asc" }],
+        select: {
+          url: true,
+          altText: true,
+          isPrimary: true,
+          position: true,
         },
       },
     },
