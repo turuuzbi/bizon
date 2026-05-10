@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="erkas-icon-purple" x1="108" y1="62" x2="397" y2="425" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A870EE" />
+      <stop offset="1" stop-color="#7C42C3" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="#FAF4FF" />
+  <g fill="url(#erkas-icon-purple)" stroke="url(#erkas-icon-purple)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M122 177L227 96L247 121L150 197L122 177Z" stroke-width="6" />
+    <path d="M390 177L285 96L265 121L362 197L390 177Z" stroke-width="6" />
+    <circle cx="256" cy="90" r="18" fill="white" stroke-width="12" />
+    <circle cx="213" cy="111" r="17" fill="white" stroke-width="12" />
+    <circle cx="299" cy="111" r="17" fill="white" stroke-width="12" />
+    <path d="M164 150V233H192V183L227 157" stroke-width="14" />
+    <path d="M348 150V233H320V183L285 157" stroke-width="14" />
+    <rect x="228" y="193" width="96" height="19" rx="9.5" stroke-width="0" />
+    <path d="M237 212H325C331 212 336 217 336 223V244H237V212Z" stroke-width="0" />
+    <rect x="246" y="243" width="27" height="132" rx="12" stroke-width="0" />
+    <path d="M114 267C114 256 123 247 134 247H213L146 344C142 349 135 351 129 348L120 341C116 338 113 332 113 327L114 267Z" stroke-width="0" />
+    <path d="M398 267C398 256 389 247 378 247H299L366 344C370 349 377 351 383 348L392 341C396 338 399 332 399 327L398 267Z" stroke-width="0" />
+    <path d="M213 329L256 372L299 329L319 348L276 391L318 433L299 452L256 409L213 452L194 433L236 391L193 348L213 329Z" stroke-width="0" />
+    <path d="M213 344L256 387L299 344" stroke-width="12" />
+  </g>
+</svg>
