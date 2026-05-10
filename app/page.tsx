@@ -239,7 +239,7 @@ export default async function HomePage() {
             </p>
             <h1 className="mt-6 max-w-4xl font-[family:var(--font-display)] text-[clamp(3rem,6vw,5.7rem)] leading-[0.92] tracking-[-0.06em] text-[#211a1f]">
               A calmer storefront for materials, finishes, and everyday site
-              supply.
+              supply!
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-[#62586a] sm:text-lg">
               We stripped the public side back to what actually helps people
