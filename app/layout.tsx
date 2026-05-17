@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Fraunces, Geist_Mono, Manrope } from "next/font/google";
+import { Fraunces, Geist_Mono, Manrope, Geist } from "next/font/google";
 
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -32,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${fraunces.variable} ${geistMono.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", manrope.variable, fraunces.variable, geistMono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
         <ClerkProvider>{children}</ClerkProvider>
