@@ -2,21 +2,10 @@ import Link from "next/link";
 import { Prisma, ProductStatus } from "@prisma/client";
 
 import { PublicHeader } from "@/components/public-header";
+import { SiteFooter } from "@/components/site-footer";
+import { formatString, getDictionary } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 import { prisma } from "@/lib/prisma";
-
-const STATUS_FILTERS = [
-  { value: "", label: "All statuses" },
-  { value: ProductStatus.ACTIVE, label: "Active" },
-  { value: ProductStatus.DRAFT, label: "Draft" },
-  { value: ProductStatus.ARCHIVED, label: "Archived" },
-] as const;
-
-const SORT_OPTIONS = [
-  { value: "featured", label: "Featured first" },
-  { value: "newest", label: "Newest first" },
-  { value: "name-asc", label: "Name A-Z" },
-  { value: "name-desc", label: "Name Z-A" },
-] as const;
 
 type SearchParamValue = string | string[] | undefined;
 
@@ -33,48 +22,34 @@ type ProductsFilterState = {
 
 type ProductCard = Awaited<ReturnType<typeof getProducts>>[number];
 
-export const metadata = {
-  title: "Products | Erka's",
-  description:
-    "Browse the Erka's catalog in a clean, photo-ready product viewer.",
-};
+const SORT_VALUES = ["featured", "newest", "name-asc", "name-desc"] as const;
+type SortValue = (typeof SORT_VALUES)[number];
+
+export async function generateMetadata() {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  return {
+    title: t.productsPage.metaTitle,
+    description: t.productsPage.metaDescription,
+  };
+}
 
 function getSingleSearchParam(value: SearchParamValue) {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
 }
 
-function toTitleCase(value: string) {
-  return value
-    .toLowerCase()
-    .split("_")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
-function formatDate(value: Date) {
-  return new Intl.DateTimeFormat("en-US", {
+function formatDate(value: Date, locale: string) {
+  return new Intl.DateTimeFormat(locale === "mn" ? "mn-MN" : "en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   }).format(value);
 }
 
-function formatStatusLabel(status: ProductStatus) {
-  return toTitleCase(status);
-}
-
-function formatUnitLabel(baseUnit: string) {
-  return toTitleCase(baseUnit);
-}
-
-function summarizeText(product: ProductCard) {
+function summarizeText(product: ProductCard, fallback: string) {
   const source =
     product.shortDescription?.trim() || product.description?.trim() || "";
-
-  if (!source) {
-    return "Ready for product photography, specs, and fuller merchandising.";
-  }
-
+  if (!source) return fallback;
   return source.length > 120 ? `${source.slice(0, 117).trim()}...` : source;
 }
 
@@ -82,11 +57,9 @@ function getStatusClass(status: ProductStatus) {
   if (status === ProductStatus.ACTIVE) {
     return "bg-[#e9f3e8] text-[#36533c]";
   }
-
   if (status === ProductStatus.ARCHIVED) {
     return "bg-[#ece6df] text-[#5f5952]";
   }
-
   return "bg-[#f6ece0] text-[#7c5c3d]";
 }
 
@@ -96,36 +69,28 @@ function buildProductsHref(
 ) {
   const params = new URLSearchParams();
   const merged = { ...filters, ...overrides };
-
   for (const [key, value] of Object.entries(merged)) {
     const trimmed = value.trim();
-
-    if (trimmed) {
-      params.set(key, trimmed);
-    }
+    if (trimmed) params.set(key, trimmed);
   }
-
   const query = params.toString();
   return query ? `/products?${query}` : "/products";
 }
 
 function getProductCategories(product: ProductCard) {
   const uniqueCategories = new Map<string, { name: string; slug: string }>();
-
   if (product.primaryCategory) {
     uniqueCategories.set(product.primaryCategory.slug, {
       name: product.primaryCategory.name,
       slug: product.primaryCategory.slug,
     });
   }
-
   for (const entry of product.productCategories) {
     uniqueCategories.set(entry.category.slug, {
       name: entry.category.name,
       slug: entry.category.slug,
     });
   }
-
   return [...uniqueCategories.values()];
 }
 
@@ -146,18 +111,9 @@ function getInitials(name: string) {
 }
 
 function getProductOrderBy(sort: string): Prisma.ProductOrderByWithRelationInput[] {
-  if (sort === "newest") {
-    return [{ publishedAt: "desc" }, { createdAt: "desc" }];
-  }
-
-  if (sort === "name-asc") {
-    return [{ name: "asc" }];
-  }
-
-  if (sort === "name-desc") {
-    return [{ name: "desc" }];
-  }
-
+  if (sort === "newest") return [{ publishedAt: "desc" }, { createdAt: "desc" }];
+  if (sort === "name-asc") return [{ name: "asc" }];
+  if (sort === "name-desc") return [{ name: "desc" }];
   return [
     { isFeatured: "desc" },
     { isNewArrival: "desc" },
@@ -184,43 +140,24 @@ async function getProducts(where: Prisma.ProductWhereInput, sort: string) {
       isNewArrival: true,
       publishedAt: true,
       createdAt: true,
-      brand: {
-        select: {
-          name: true,
-        },
-      },
-      primaryCategory: {
-        select: {
-          name: true,
-          slug: true,
-        },
-      },
+      brand: { select: { name: true } },
+      primaryCategory: { select: { name: true, slug: true } },
       productCategories: {
-        orderBy: {
-          sortOrder: "asc",
-        },
-        select: {
-          category: {
-            select: {
-              name: true,
-              slug: true,
-            },
-          },
-        },
+        orderBy: { sortOrder: "asc" },
+        select: { category: { select: { name: true, slug: true } } },
       },
       images: {
         orderBy: [{ isPrimary: "desc" }, { position: "asc" }],
         take: 1,
-        select: {
-          url: true,
-          altText: true,
-        },
+        select: { url: true, altText: true },
       },
     },
   });
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
   const resolvedSearchParams = await searchParams;
   const filters: ProductsFilterState = {
     q: getSingleSearchParam(resolvedSearchParams.q).trim(),
@@ -234,32 +171,18 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   )
     ? (filters.status as ProductStatus)
     : null;
-  const selectedSort = SORT_OPTIONS.some((option) => option.value === filters.sort)
-    ? filters.sort
+  const selectedSort: SortValue = SORT_VALUES.includes(filters.sort as SortValue)
+    ? (filters.sort as SortValue)
     : "featured";
-  const whereClauses: Prisma.ProductWhereInput[] = [];
 
-  if (selectedStatus) {
-    whereClauses.push({ status: selectedStatus });
-  }
+  const whereClauses: Prisma.ProductWhereInput[] = [];
+  if (selectedStatus) whereClauses.push({ status: selectedStatus });
 
   if (filters.category) {
     whereClauses.push({
       OR: [
-        {
-          primaryCategory: {
-            slug: filters.category,
-          },
-        },
-        {
-          productCategories: {
-            some: {
-              category: {
-                slug: filters.category,
-              },
-            },
-          },
-        },
+        { primaryCategory: { slug: filters.category } },
+        { productCategories: { some: { category: { slug: filters.category } } } },
       ],
     });
   }
@@ -267,45 +190,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   if (filters.q) {
     whereClauses.push({
       OR: [
+        { name: { contains: filters.q, mode: "insensitive" } },
+        { slug: { contains: filters.q, mode: "insensitive" } },
+        { sku: { contains: filters.q, mode: "insensitive" } },
+        { shortDescription: { contains: filters.q, mode: "insensitive" } },
+        { brand: { name: { contains: filters.q, mode: "insensitive" } } },
         {
-          name: {
-            contains: filters.q,
-            mode: "insensitive",
-          },
-        },
-        {
-          slug: {
-            contains: filters.q,
-            mode: "insensitive",
-          },
-        },
-        {
-          sku: {
-            contains: filters.q,
-            mode: "insensitive",
-          },
-        },
-        {
-          shortDescription: {
-            contains: filters.q,
-            mode: "insensitive",
-          },
-        },
-        {
-          brand: {
-            name: {
-              contains: filters.q,
-              mode: "insensitive",
-            },
-          },
-        },
-        {
-          primaryCategory: {
-            name: {
-              contains: filters.q,
-              mode: "insensitive",
-            },
-          },
+          primaryCategory: { name: { contains: filters.q, mode: "insensitive" } },
         },
       ],
     });
@@ -319,24 +210,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     prisma.category.findMany({
       where: {
         OR: [
-          {
-            primaryProducts: {
-              some: {},
-            },
-          },
-          {
-            productCategories: {
-              some: {},
-            },
-          },
+          { primaryProducts: { some: {} } },
+          { productCategories: { some: {} } },
         ],
       },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-      },
+      select: { id: true, name: true, slug: true },
     }),
   ]);
 
@@ -346,32 +225,46 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     (category) => category.slug === filters.category,
   );
 
-  return (
-    <main className="min-h-screen">
-      <div className="mx-auto flex w-full max-w-[1360px] flex-col gap-6 px-4 py-4 sm:px-6 lg:px-8">
-        <PublicHeader current="products" />
+  const statusFilters = [
+    { value: "", label: t.productsPage.allStatuses },
+    { value: ProductStatus.ACTIVE, label: t.productStatus.ACTIVE },
+    { value: ProductStatus.DRAFT, label: t.productStatus.DRAFT },
+    { value: ProductStatus.ARCHIVED, label: t.productStatus.ARCHIVED },
+  ];
 
+  const sortOptions: Array<{ value: SortValue; label: string }> = [
+    { value: "featured", label: t.productsPage.sortFeatured },
+    { value: "newest", label: t.productsPage.sortNewest },
+    { value: "name-asc", label: t.productsPage.sortNameAsc },
+    { value: "name-desc", label: t.productsPage.sortNameDesc },
+  ];
+
+  const unitLabel = (unit: string) =>
+    t.unit[unit] ?? unit.charAt(0) + unit.slice(1).toLowerCase().replace(/_/g, " ");
+
+  return (
+    <main className="min-h-screen bg-white">
+      <PublicHeader current="products" />
+      <div className="mx-auto flex w-full max-w-340 flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
         <section className="rounded-[40px] border border-black/10 bg-[#fffaf5] px-6 py-8 shadow-[0_24px_60px_rgba(28,23,19,0.06)] sm:p-10">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
-                Product catalog
+                {t.productsPage.eyebrow}
               </p>
               <h1 className="mt-4 font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.05em] text-[#211a1f] sm:text-5xl">
-                Browse by department, then narrow the list with search and sort.
+                {t.productsPage.title}
               </h1>
               <p className="mt-4 text-base leading-8 text-[#62586a] sm:text-lg">
-                The layout stays simple on purpose: categories first, filters
-                second, and image-ready cards that give the product room to be
-                seen clearly.
+                {t.productsPage.subtitle}
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
               {[
-                { label: "Results", value: products.length },
-                { label: "With photos", value: imageCount },
-                { label: "Featured", value: featuredCount },
+                { label: t.productsPage.statsResults, value: products.length },
+                { label: t.productsPage.statsWithPhotos, value: imageCount },
+                { label: t.productsPage.statsFeatured, value: featuredCount },
               ].map((item) => (
                 <article
                   key={item.label}
@@ -402,12 +295,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         : "bg-[#8e55cf] text-white"
                     }`}
                   >
-                    All products
+                    {t.productsPage.allProducts}
                   </Link>
 
                   {categories.map((category) => {
                     const active = filters.category === category.slug;
-
                     return (
                       <Link
                         key={category.id}
@@ -433,27 +325,27 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
               <label className="block">
                 <span className="text-sm font-semibold text-[#211a1f]">
-                  Search
+                  {t.productsPage.searchLabel}
                 </span>
                 <input
                   type="search"
                   name="q"
                   defaultValue={filters.q}
-                  placeholder="Product, SKU, brand..."
+                  placeholder={t.productsPage.searchPlaceholder}
                   className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#211a1f] outline-none transition-colors focus:border-[#8e55cf]"
                 />
               </label>
 
               <label className="block">
                 <span className="text-sm font-semibold text-[#211a1f]">
-                  Status
+                  {t.productsPage.statusLabel}
                 </span>
                 <select
                   name="status"
                   defaultValue={filters.status}
                   className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#211a1f] outline-none transition-colors focus:border-[#8e55cf]"
                 >
-                  {STATUS_FILTERS.map((option) => (
+                  {statusFilters.map((option) => (
                     <option key={option.label} value={option.value}>
                       {option.label}
                     </option>
@@ -463,14 +355,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
               <label className="block">
                 <span className="text-sm font-semibold text-[#211a1f]">
-                  Sort
+                  {t.productsPage.sortLabel}
                 </span>
                 <select
                   name="sort"
                   defaultValue={selectedSort}
                   className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#211a1f] outline-none transition-colors focus:border-[#8e55cf]"
                 >
-                  {SORT_OPTIONS.map((option) => (
+                  {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -483,13 +375,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   type="submit"
                   className="rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
                 >
-                  Apply
+                  {t.productsPage.apply}
                 </button>
                 <Link
                   href="/products"
                   className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2731] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
                 >
-                  Reset
+                  {t.productsPage.reset}
                 </Link>
               </div>
             </form>
@@ -499,18 +391,20 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <section className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
-              Current view
+              {t.productsPage.currentView}
             </p>
             <p className="mt-2 text-sm leading-7 text-[#62586a]">
               {selectedCategory
-                ? `Showing products in ${selectedCategory.name}.`
-                : "Showing the full catalog."}
+                ? formatString(t.productsPage.showingInCategory, {
+                    name: selectedCategory.name,
+                  })
+                : t.productsPage.showingFullCatalog}
             </p>
           </div>
           <p className="text-sm text-[#62586a]">
             {filters.q
-              ? `Search: "${filters.q}"`
-              : "Use search or category chips to narrow the list."}
+              ? `${t.productsPage.searchPrefix} "${filters.q}"`
+              : t.productsPage.narrowHint}
           </p>
         </section>
 
@@ -554,12 +448,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                           product.status,
                         )}`}
                       >
-                        {formatStatusLabel(product.status)}
+                        {t.productStatus[product.status]}
                       </span>
 
                       {product.isNewArrival ? (
                         <span className="rounded-full bg-[#efe4fb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
-                          New
+                          {t.productsPage.badgeNew}
                         </span>
                       ) : null}
                     </div>
@@ -567,19 +461,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
                   <div className="mt-4">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8c7f9a]">
-                      {product.brand?.name ?? "Erka's catalog"}
+                      {product.brand?.name ?? t.productsPage.catalogTagline}
                     </p>
                     <div className="mt-2 flex items-start justify-between gap-4">
                       <h3 className="text-xl font-semibold tracking-[-0.04em] text-[#211a1f]">
                         {product.name}
                       </h3>
                       <span className="rounded-full bg-[#f3ebfb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d36ad]">
-                        {formatUnitLabel(product.baseUnit)}
+                        {unitLabel(product.baseUnit)}
                       </span>
                     </div>
 
                     <p className="mt-3 text-sm leading-7 text-[#5f5664]">
-                      {summarizeText(product)}
+                      {summarizeText(product, t.productsPage.cardFallback)}
                     </p>
 
                     <div className="mt-4 flex flex-wrap gap-2">
@@ -597,14 +491,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         ))
                       ) : (
                         <span className="rounded-full border border-dashed border-black/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7b727f]">
-                          No category
+                          {t.products.noCategory}
                         </span>
                       )}
                     </div>
 
                     <div className="mt-5 flex items-center justify-between border-t border-black/8 pt-4 text-xs font-medium text-[#6b636a]">
-                      <span>{product.sku ?? "SKU pending"}</span>
-                      <span>{formatDate(product.publishedAt ?? product.createdAt)}</span>
+                      <span>{product.sku ?? t.productsPage.skuPending}</span>
+                      <span>
+                        {formatDate(
+                          product.publishedAt ?? product.createdAt,
+                          locale,
+                        )}
+                      </span>
                     </div>
                   </div>
                 </article>
@@ -614,28 +513,30 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <section className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
               <div className="rounded-[36px] border border-dashed border-black/10 bg-[#fffaf5] p-10 text-center shadow-[0_24px_60px_rgba(28,23,19,0.05)]">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
-                  No results
+                  {t.productsPage.noResults}
                 </p>
                 <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#211a1f]">
-                  No products match this view.
+                  {t.productsPage.noProductsMatch}
                 </h2>
                 <p className="mt-4 text-base leading-7 text-[#62586a]">
                   {selectedCategory
-                    ? `Nothing matched the current filters inside ${selectedCategory.name}.`
-                    : "Try another category, search term, or status filter."}
+                    ? formatString(t.productsPage.noMatchInCategory, {
+                        name: selectedCategory.name,
+                      })
+                    : t.productsPage.noMatchHint}
                 </p>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <Link
                     href="/products"
                     className="rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
                   >
-                    Reset filters
+                    {t.productsPage.resetFilters}
                   </Link>
                   <Link
                     href="/admin/products/new"
                     className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2731] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
                   >
-                    Add product
+                    {t.products.addProduct}
                   </Link>
                 </div>
               </div>
@@ -643,6 +544,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           )}
         </section>
       </div>
+      <SiteFooter />
     </main>
   );
 }

@@ -4,11 +4,14 @@ import Link from "next/link";
 import { UserButton, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
+import { useT } from "@/components/locale-provider";
+
 type ViewerState = {
   role: "CUSTOMER" | "STAFF" | "ADMIN" | null;
 };
 
 export function SiteAuthActions() {
+  const t = useT();
   const { isLoaded, userId } = useAuth();
   const [viewer, setViewer] = useState<ViewerState | null>(null);
 
@@ -64,13 +67,13 @@ export function SiteAuthActions() {
           href="/sign-in"
           className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#312836] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
         >
-          Sign in
+          {t.header.signIn}
         </Link>
         <Link
           href="/sign-up"
           className="rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
         >
-          Create account
+          {t.header.createAccount}
         </Link>
       </div>
     );
@@ -84,7 +87,7 @@ export function SiteAuthActions() {
           prefetch={false}
           className="rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
         >
-          Admin Panel
+          {t.header.adminPanel}
         </Link>
       ) : null}
       <div className="flex h-10 items-center rounded-full border border-black/10 bg-white px-1.5">

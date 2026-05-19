@@ -11,6 +11,8 @@ import {
   updateProduct,
 } from "@/lib/admin-products";
 import { requireAdminUser } from "@/lib/auth";
+import { formatString, getDictionary } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 
 function buildRedirectUrl(
   pathname: string,
@@ -19,17 +21,17 @@ function buildRedirectUrl(
   const search = new URLSearchParams();
 
   for (const [key, value] of Object.entries(params)) {
-    if (value) {
-      search.set(key, value);
-    }
+    if (value) search.set(key, value);
   }
 
   const query = search.toString();
   return query ? `${pathname}?${query}` : pathname;
 }
 
-function getErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : "Something went wrong.";
+async function getErrorMessage(error: unknown) {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  return error instanceof Error ? error.message : t.admin.actions.somethingWrong;
 }
 
 export async function createProductAction(
@@ -37,6 +39,8 @@ export async function createProductAction(
   formData: FormData,
 ) {
   await requireAdminUser();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   try {
     const product = await createProduct(parseManualProductFormData(formData));
@@ -49,13 +53,13 @@ export async function createProductAction(
 
     redirect(
       buildRedirectUrl(`/admin/products/${product.id}`, {
-        message: `Created ${product.name}.`,
+        message: formatString(t.admin.actions.created, { name: product.name }),
       }),
     );
   } catch (error) {
     redirect(
       buildRedirectUrl(sourcePath, {
-        error: getErrorMessage(error),
+        error: await getErrorMessage(error),
       }),
     );
   }
@@ -67,6 +71,8 @@ export async function updateProductAction(
   formData: FormData,
 ) {
   await requireAdminUser();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   try {
     const product = await updateProduct(
@@ -82,13 +88,13 @@ export async function updateProductAction(
 
     redirect(
       buildRedirectUrl(`/admin/products/${productId}`, {
-        message: `Updated ${product.name}.`,
+        message: formatString(t.admin.actions.updated, { name: product.name }),
       }),
     );
   } catch (error) {
     redirect(
       buildRedirectUrl(sourcePath, {
-        error: getErrorMessage(error),
+        error: await getErrorMessage(error),
       }),
     );
   }
@@ -96,6 +102,8 @@ export async function updateProductAction(
 
 export async function deleteProductAction(productId: string) {
   await requireAdminUser();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   try {
     const product = await deleteProduct(productId);
@@ -108,13 +116,13 @@ export async function deleteProductAction(productId: string) {
 
     redirect(
       buildRedirectUrl("/admin/products", {
-        message: `Deleted ${product.name}.`,
+        message: formatString(t.admin.actions.deleted, { name: product.name }),
       }),
     );
   } catch (error) {
     redirect(
       buildRedirectUrl("/admin/products", {
-        error: getErrorMessage(error),
+        error: await getErrorMessage(error),
       }),
     );
   }
@@ -122,23 +130,32 @@ export async function deleteProductAction(productId: string) {
 
 export async function importProductsAction(formData: FormData) {
   await requireAdminUser();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   const file = formData.get("file");
 
   if (!(file instanceof File) || file.size === 0) {
     redirect(
       buildRedirectUrl("/admin/products", {
-        error: "Upload an Excel or CSV file first.",
+        error: t.admin.actions.uploadFirst,
       }),
     );
   }
 
   try {
     const result = await importProductsFromWorkbook(await file.arrayBuffer());
-    const message = `Import finished: ${result.created} created, ${result.updated} updated, ${result.skipped} skipped.`;
+    const message = formatString(t.admin.actions.importFinished, {
+      created: result.created,
+      updated: result.updated,
+      skipped: result.skipped,
+    });
     const errorSummary =
       result.errors.length > 0
-        ? `${result.errors.length} row(s) failed. ${result.errors[0]}`
+        ? formatString(t.admin.actions.rowsFailed, {
+            count: result.errors.length,
+            first: result.errors[0],
+          })
         : null;
 
     revalidatePath("/admin");
@@ -155,7 +172,7 @@ export async function importProductsAction(formData: FormData) {
   } catch (error) {
     redirect(
       buildRedirectUrl("/admin/products", {
-        error: getErrorMessage(error),
+        error: await getErrorMessage(error),
       }),
     );
   }

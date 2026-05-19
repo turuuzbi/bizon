@@ -2,6 +2,8 @@
 
 import { useFormStatus } from "react-dom";
 
+import { useT } from "@/components/locale-provider";
+
 type AdminSubmitButtonProps = {
   label: string;
   pendingLabel?: string;
@@ -13,6 +15,7 @@ export function AdminSubmitButton({
   pendingLabel,
   className,
 }: AdminSubmitButtonProps) {
+  const t = useT();
   const { pending } = useFormStatus();
 
   return (
@@ -24,7 +27,7 @@ export function AdminSubmitButton({
         "rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1] disabled:cursor-not-allowed disabled:opacity-70"
       }
     >
-      {pending ? pendingLabel ?? "Saving..." : label}
+      {pending ? pendingLabel ?? t.admin.productForm.saving : label}
     </button>
   );
 }

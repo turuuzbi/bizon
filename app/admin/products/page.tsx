@@ -8,14 +8,13 @@ import {
   deleteProductAction,
   importProductsAction,
 } from "@/app/admin/products/actions";
+import { getDictionary, type Locale } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 import { prisma } from "@/lib/prisma";
 
-function formatDate(date: Date | null) {
-  if (!date) {
-    return "Not published";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
+function formatDate(date: Date | null, locale: Locale, notSet: string) {
+  if (!date) return notSet;
+  return new Intl.DateTimeFormat(locale === "mn" ? "mn-MN" : "en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -43,6 +42,10 @@ export default async function AdminProductsPage({
     error?: string;
   }>;
 }) {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const tOps = t.admin.productOps;
+
   const params = await searchParams;
   const query = params.q?.trim() ?? "";
   const statusFilter = Object.values(ProductStatus).includes(
@@ -87,22 +90,9 @@ export default async function AdminProductsPage({
         publishedAt: true,
         isFeatured: true,
         isNewArrival: true,
-        brand: {
-          select: {
-            name: true,
-          },
-        },
-        primaryCategory: {
-          select: {
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            variants: true,
-            productCategories: true,
-          },
-        },
+        brand: { select: { name: true } },
+        primaryCategory: { select: { name: true } },
+        _count: { select: { variants: true, productCategories: true } },
       },
     }),
   ]);
@@ -121,15 +111,13 @@ export default async function AdminProductsPage({
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-              Product operations
+              {tOps.eyebrow}
             </p>
             <h1 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#1d1a17] sm:text-5xl">
-              Manage products, categories, and spreadsheet imports.
+              {tOps.title}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-[#625f5a] sm:text-lg">
-              This workspace handles real create, edit, delete, and Excel import
-              flows against your Prisma schema, including brand and category
-              linking.
+              {tOps.copy}
             </p>
           </div>
 
@@ -138,23 +126,23 @@ export default async function AdminProductsPage({
               href="/admin/products/new"
               className="rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
             >
-              Add Product
+              {tOps.addProduct}
             </Link>
             <Link
               href="/admin/products/template"
               className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
             >
-              Download Template
+              {tOps.downloadTemplate}
             </Link>
           </div>
         </div>
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
-            { label: "All products", value: totalProducts },
-            { label: "Active", value: activeProducts },
-            { label: "Draft", value: draftProducts },
-            { label: "Archived", value: archivedProducts },
+            { label: tOps.allProducts, value: totalProducts },
+            { label: tOps.active, value: activeProducts },
+            { label: tOps.draft, value: draftProducts },
+            { label: tOps.archived, value: archivedProducts },
           ].map((card) => (
             <article
               key={card.label}
@@ -174,29 +162,29 @@ export default async function AdminProductsPage({
           <form className="flex flex-col gap-4 lg:flex-row lg:items-end">
             <label className="block flex-1">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Search products
+                {tOps.searchProducts}
               </span>
               <input
                 name="q"
                 defaultValue={query}
-                placeholder="name, slug, or SKU"
+                placeholder={tOps.searchPlaceholder}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
             <label className="block w-full lg:w-[220px]">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Status filter
+                {tOps.statusFilter}
               </span>
               <select
                 name="status"
                 defaultValue={statusFilter ?? ""}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
-                <option value="">All statuses</option>
+                <option value="">{tOps.allStatuses}</option>
                 {Object.values(ProductStatus).map((status) => (
                   <option key={status} value={status}>
-                    {status}
+                    {t.productStatus[status]}
                   </option>
                 ))}
               </select>
@@ -206,7 +194,7 @@ export default async function AdminProductsPage({
               type="submit"
               className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-semibold text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
             >
-              Filter
+              {tOps.filter}
             </button>
           </form>
 
@@ -216,11 +204,11 @@ export default async function AdminProductsPage({
                 <table className="min-w-full divide-y divide-black/8">
                   <thead className="bg-[#f6f1ea] text-left">
                     <tr className="text-xs font-semibold uppercase tracking-[0.18em] text-[#625f5a]">
-                      <th className="px-5 py-4">Product</th>
-                      <th className="px-5 py-4">Organization</th>
-                      <th className="px-5 py-4">Status</th>
-                      <th className="px-5 py-4">Metadata</th>
-                      <th className="px-5 py-4 text-right">Actions</th>
+                      <th className="px-5 py-4">{tOps.productCol}</th>
+                      <th className="px-5 py-4">{tOps.organizationCol}</th>
+                      <th className="px-5 py-4">{tOps.statusCol}</th>
+                      <th className="px-5 py-4">{tOps.metadataCol}</th>
+                      <th className="px-5 py-4 text-right">{tOps.actionsCol}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-black/6">
@@ -235,19 +223,22 @@ export default async function AdminProductsPage({
                               {product.slug}
                             </p>
                             <p className="mt-1 text-sm leading-6 text-[#625f5a]">
-                              SKU: {product.sku ?? "Not set"}
+                              {t.admin.overview.sku}:{" "}
+                              {product.sku ?? t.admin.overview.notSet}
                             </p>
                           </div>
                         </td>
                         <td className="px-5 py-5">
                           <div className="min-w-[180px] text-sm leading-7 text-[#625f5a]">
-                            <p>Brand: {product.brand?.name ?? "No brand"}</p>
                             <p>
-                              Primary category:{" "}
-                              {product.primaryCategory?.name ?? "None"}
+                              {tOps.brand}: {product.brand?.name ?? tOps.noBrand}
                             </p>
                             <p>
-                              Category links: {product._count.productCategories}
+                              {tOps.primaryCategory}:{" "}
+                              {product.primaryCategory?.name ?? tOps.none}
+                            </p>
+                            <p>
+                              {tOps.categoryLinks}: {product._count.productCategories}
                             </p>
                           </div>
                         </td>
@@ -258,16 +249,16 @@ export default async function AdminProductsPage({
                                 product.status,
                               )}`}
                             >
-                              {product.status}
+                              {t.productStatus[product.status]}
                             </span>
                             {product.isFeatured ? (
                               <span className="rounded-full bg-[#efe4d3] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7b5f3d]">
-                                Featured
+                                {tOps.featured}
                               </span>
                             ) : null}
                             {product.isNewArrival ? (
                               <span className="rounded-full bg-[#e7eef4] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#38586f]">
-                                New
+                                {tOps.newBadge}
                               </span>
                             ) : null}
                           </div>
@@ -275,10 +266,20 @@ export default async function AdminProductsPage({
                         <td className="px-5 py-5">
                           <div className="min-w-[180px] text-sm leading-7 text-[#625f5a]">
                             <p>
-                              {product.currency} / {product.baseUnit}
+                              {product.currency} /{" "}
+                              {t.unit[product.baseUnit] ?? product.baseUnit}
                             </p>
-                            <p>Variants: {product._count.variants}</p>
-                            <p>Published: {formatDate(product.publishedAt)}</p>
+                            <p>
+                              {tOps.variants}: {product._count.variants}
+                            </p>
+                            <p>
+                              {tOps.published}:{" "}
+                              {formatDate(
+                                product.publishedAt,
+                                locale,
+                                tOps.notPublished,
+                              )}
+                            </p>
                           </div>
                         </td>
                         <td className="px-5 py-5">
@@ -287,7 +288,7 @@ export default async function AdminProductsPage({
                               href={`/admin/products/${product.id}`}
                               className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
                             >
-                              Edit
+                              {tOps.edit}
                             </Link>
                             <DeleteProductButton
                               action={deleteProductAction.bind(null, product.id)}
@@ -302,7 +303,7 @@ export default async function AdminProductsPage({
               </div>
             ) : (
               <div className="px-6 py-8 text-sm leading-7 text-[#625f5a]">
-                No products matched the current filter.
+                {tOps.noMatch}
               </div>
             )}
           </div>
@@ -310,15 +311,13 @@ export default async function AdminProductsPage({
 
         <section className="rounded-[36px] border border-black/10 bg-[#f1ece4] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-            Spreadsheet import
+            {tOps.spreadsheetImport}
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#1d1a17]">
-            Connect an Excel sheet to your catalog workflow
+            {tOps.importTitle}
           </h2>
           <p className="mt-4 text-base leading-7 text-[#625f5a]">
-            Upload `.xlsx`, `.xls`, or `.csv`. The importer will create or update
-            products by `sku` first, then by `slug`, and will also match or
-            create brands and categories by name.
+            {tOps.importCopy}
           </p>
 
           <form
@@ -328,7 +327,7 @@ export default async function AdminProductsPage({
           >
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Workbook file
+                {tOps.workbookFile}
               </span>
               <input
                 type="file"
@@ -340,44 +339,25 @@ export default async function AdminProductsPage({
             </label>
 
             <div className="rounded-[24px] border border-black/10 bg-white px-5 py-4 text-sm leading-7 text-[#4f4a43]">
-              <p>How it works:</p>
-              <p>
-                Use a sheet named `Products`, or let the importer read the first
-                sheet in the workbook.
-              </p>
-              <p>
-                If the `sku` already exists, that row updates the product. If
-                there is no `sku` match, the importer tries `slug`. If neither
-                matches, it creates a new product.
-              </p>
-              <p>
-                Category lists can be separated with `|`, commas, or new lines.
-                Image rows should use `url | alt text`.
-              </p>
-              <p>
-                Sheets with Mongolian headers like `Бараа нэр`, `Ангилал`,
-                `Хэмжээ`, and `Тайлбар` are also supported.
-              </p>
-              <p className="mt-4">Supported columns:</p>
-              <p>
-                `name`, `sku`, `slug`, `status`, `brand`, `primaryCategory`,
-                `categories`, `shortDescription`, `description`, `currency`,
-                `baseUnit`, `trackInventory`, `allowBackorder`, `isFeatured`,
-                `isNewArrival`, `seoTitle`, `seoDescription`, `publishedAt`,
-                `images`
-              </p>
+              <p>{tOps.howItWorks}</p>
+              <p>{tOps.importHint1}</p>
+              <p>{tOps.importHint2}</p>
+              <p>{tOps.importHint3}</p>
+              <p>{tOps.importHint4}</p>
+              <p className="mt-4">{tOps.supportedColumns}</p>
+              <p>{tOps.supportedColumnsList}</p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
               <AdminSubmitButton
-                label="Import Sheet"
-                pendingLabel="Importing..."
+                label={tOps.importSheet}
+                pendingLabel={tOps.importing}
               />
               <Link
                 href="/admin/products/template"
                 className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
               >
-                Download template
+                {tOps.downloadTemplateBtn}
               </Link>
             </div>
           </form>

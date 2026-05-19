@@ -8,6 +8,8 @@ import {
   updateProductAction,
 } from "@/app/admin/products/actions";
 import { getEditableProduct, getProductFormOptions } from "@/lib/admin-products";
+import { getDictionary } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 
 export default async function EditProductPage({
   params,
@@ -19,6 +21,9 @@ export default async function EditProductPage({
     message?: string;
   }>;
 }) {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const tForm = t.admin.productForm;
   const [{ productId }, query] = await Promise.all([params, searchParams]);
   const [product, options] = await Promise.all([
     getEditableProduct(productId),
@@ -37,7 +42,7 @@ export default async function EditProductPage({
             href="/admin/products"
             className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
           >
-            Back to products
+            {tForm.backToProducts}
           </Link>
         </div>
 
@@ -49,10 +54,10 @@ export default async function EditProductPage({
 
       <ProductForm
         action={updateProductAction.bind(null, product.id, `/admin/products/${product.id}`)}
-        submitLabel="Save Changes"
-        submitPendingLabel="Saving..."
+        submitLabel={tForm.saveChanges}
+        submitPendingLabel={tForm.saving}
         title={product.name}
-        description="Update the core product record, category links, and merchandising flags without touching the landing page work."
+        description={tForm.editPageCopy}
         error={query.error}
         message={query.message}
         options={options}

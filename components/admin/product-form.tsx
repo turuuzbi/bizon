@@ -6,6 +6,8 @@ import {
 } from "@/lib/admin-products";
 import { AdminSubmitButton } from "@/components/admin/admin-submit-button";
 import { NoticeBanner } from "@/components/admin/notice-banner";
+import { formatString, getDictionary } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 
 type ProductFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -55,14 +57,10 @@ type ProductFormProps = {
 };
 
 function formatDateTimeLocal(value: Date | null | undefined) {
-  if (!value) {
-    return "";
-  }
-
+  if (!value) return "";
   const date = new Date(value);
   const offset = date.getTimezoneOffset();
   const localDate = new Date(date.getTime() - offset * 60_000);
-
   return localDate.toISOString().slice(0, 16);
 }
 
@@ -86,7 +84,7 @@ function formatImageEntriesValue(
     .join("\n");
 }
 
-export function ProductForm({
+export async function ProductForm({
   action,
   submitLabel,
   submitPendingLabel,
@@ -97,6 +95,9 @@ export function ProductForm({
   product,
   options,
 }: ProductFormProps) {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const tForm = t.admin.productForm;
   const selectedCategoryIds = new Set(
     product?.productCategories.map((item) => item.categoryId) ?? [],
   );
@@ -109,7 +110,7 @@ export function ProductForm({
       <section className="rounded-[36px] border border-black/10 bg-[#fffaf5] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
         <div className="max-w-3xl">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-            Product editor
+            {tForm.editorEyebrow}
           </p>
           <h1 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#1d1a17] sm:text-5xl">
             {title}
@@ -125,7 +126,7 @@ export function ProductForm({
           <div className="grid gap-6 lg:grid-cols-2">
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Product name
+                {tForm.productName}
               </span>
               <input
                 name="name"
@@ -136,17 +137,21 @@ export function ProductForm({
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold text-[#1d1a17]">Slug</span>
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                {tForm.slug}
+              </span>
               <input
                 name="slug"
                 defaultValue={product?.slug ?? ""}
-                placeholder="leave blank to generate from name"
+                placeholder={tForm.slugPlaceholder}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold text-[#1d1a17]">SKU</span>
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                {tForm.sku}
+              </span>
               <input
                 name="sku"
                 defaultValue={product?.sku ?? ""}
@@ -156,7 +161,7 @@ export function ProductForm({
 
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Currency
+                {tForm.currency}
               </span>
               <input
                 name="currency"
@@ -166,7 +171,9 @@ export function ProductForm({
             </label>
 
             <label className="block">
-              <span className="text-sm font-semibold text-[#1d1a17]">Status</span>
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                {tForm.status}
+              </span>
               <select
                 name="status"
                 defaultValue={product?.status ?? ProductStatus.DRAFT}
@@ -174,7 +181,7 @@ export function ProductForm({
               >
                 {PRODUCT_STATUS_OPTIONS.map((status) => (
                   <option key={status} value={status}>
-                    {status}
+                    {t.productStatus[status]}
                   </option>
                 ))}
               </select>
@@ -182,7 +189,7 @@ export function ProductForm({
 
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Base unit
+                {tForm.baseUnit}
               </span>
               <select
                 name="baseUnit"
@@ -191,7 +198,7 @@ export function ProductForm({
               >
                 {UNIT_TYPE_OPTIONS.map((unit) => (
                   <option key={unit} value={unit}>
-                    {unit}
+                    {t.unit[unit] ?? unit}
                   </option>
                 ))}
               </select>
@@ -200,7 +207,7 @@ export function ProductForm({
 
           <label className="mt-6 block">
             <span className="text-sm font-semibold text-[#1d1a17]">
-              Short description
+              {tForm.shortDescription}
             </span>
             <textarea
               name="shortDescription"
@@ -212,7 +219,7 @@ export function ProductForm({
 
           <label className="mt-6 block">
             <span className="text-sm font-semibold text-[#1d1a17]">
-              Full description
+              {tForm.fullDescription}
             </span>
             <textarea
               name="description"
@@ -226,17 +233,19 @@ export function ProductForm({
         <section className="rounded-[36px] border border-black/10 bg-[#fffaf5] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
           <div className="grid gap-6 lg:grid-cols-2">
             <label className="block">
-              <span className="text-sm font-semibold text-[#1d1a17]">Brand</span>
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                {tForm.brand}
+              </span>
               <select
                 name="brandId"
                 defaultValue={product?.brandId ?? ""}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
-                <option value="">No brand selected</option>
+                <option value="">{tForm.noBrandSelected}</option>
                 {options.brands.map((brand) => (
                   <option key={brand.id} value={brand.id}>
                     {brand.name}
-                    {brand.isActive ? "" : " (inactive)"}
+                    {brand.isActive ? "" : ` (${tForm.inactive})`}
                   </option>
                 ))}
               </select>
@@ -244,29 +253,29 @@ export function ProductForm({
 
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                New brand name
+                {tForm.newBrandName}
               </span>
               <input
                 name="newBrandName"
-                placeholder="optional: create or match a brand by name"
+                placeholder={tForm.newBrandPlaceholder}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
             <label className="block lg:col-span-2">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Primary category
+                {tForm.primaryCategory}
               </span>
               <select
                 name="primaryCategoryId"
                 defaultValue={product?.primaryCategoryId ?? ""}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               >
-                <option value="">No primary category</option>
+                <option value="">{tForm.noPrimaryCategory}</option>
                 {options.categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.label}
-                    {category.isActive ? "" : " (inactive)"}
+                    {category.isActive ? "" : ` (${tForm.inactive})`}
                   </option>
                 ))}
               </select>
@@ -275,7 +284,7 @@ export function ProductForm({
 
           <div className="mt-6">
             <span className="text-sm font-semibold text-[#1d1a17]">
-              Category selection
+              {tForm.categorySelection}
             </span>
             <div className="mt-3 grid max-h-[320px] gap-3 overflow-y-auto rounded-[24px] border border-black/10 bg-white p-4 md:grid-cols-2">
               {options.categories.length > 0 ? (
@@ -293,14 +302,13 @@ export function ProductForm({
                     />
                     <span className="text-sm leading-6 text-[#3f3a35]">
                       {category.label}
-                      {category.isActive ? "" : " (inactive)"}
+                      {category.isActive ? "" : ` (${tForm.inactive})`}
                     </span>
                   </label>
                 ))
               ) : (
                 <p className="text-sm leading-7 text-[#625f5a]">
-                  No categories exist yet. You can still create some below with
-                  comma-separated names.
+                  {tForm.noCategoriesHint}
                 </p>
               )}
             </div>
@@ -308,11 +316,11 @@ export function ProductForm({
 
           <label className="mt-6 block">
             <span className="text-sm font-semibold text-[#1d1a17]">
-              New categories
+              {tForm.newCategories}
             </span>
             <input
               name="newCategories"
-              placeholder="e.g. Tile, Bathroom, Electrical"
+              placeholder={tForm.newCategoriesPlaceholder}
               className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
             />
           </label>
@@ -322,38 +330,30 @@ export function ProductForm({
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,0.7fr)]">
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Product image entries
+                {tForm.productImageEntries}
               </span>
               <textarea
                 name="imageEntries"
                 rows={8}
                 defaultValue={formatImageEntriesValue(product?.images)}
-                placeholder={
-                  "https://example.com/chair-front.jpg | Front view\nhttps://example.com/chair-side.jpg | Side view"
-                }
+                placeholder={tForm.imageEntriesPlaceholder}
                 className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
               />
             </label>
 
             <div className="rounded-[28px] border border-black/10 bg-[#fffcf8] p-5 text-sm leading-7 text-[#4f4a43]">
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-                Image guide
+                {tForm.imageGuide}
               </p>
-              <p className="mt-3">
-                Add one line per image. Use the format `image-url | alt text`.
-                The first valid line becomes the main catalog image.
-              </p>
-              <p className="mt-3">
-                This setup keeps things simple for now: no storage config, just
-                image URLs you can manage quickly while building the catalog.
-              </p>
+              <p className="mt-3">{tForm.imageGuideCopy1}</p>
+              <p className="mt-3">{tForm.imageGuideCopy2}</p>
             </div>
           </div>
 
           {product?.images.length ? (
             <div className="mt-6">
               <p className="text-sm font-semibold text-[#1d1a17]">
-                Current image preview
+                {tForm.currentImagePreview}
               </p>
               <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
                 {product.images
@@ -376,7 +376,11 @@ export function ProductForm({
                         }}
                       />
                       <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#625f5a]">
-                        {image.isPrimary ? "Primary" : `Image ${image.position + 1}`}
+                        {image.isPrimary
+                          ? tForm.primary
+                          : formatString(tForm.imageN, {
+                              n: image.position + 1,
+                            })}
                       </p>
                       <p className="mt-1 text-sm leading-6 text-[#4f4a43]">
                         {image.altText ?? image.url}
@@ -392,7 +396,7 @@ export function ProductForm({
           <div className="grid gap-6 lg:grid-cols-2">
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                Published at
+                {tForm.publishedAt}
               </span>
               <input
                 type="datetime-local"
@@ -406,22 +410,22 @@ export function ProductForm({
               {[
                 {
                   name: "trackInventory",
-                  label: "Track inventory",
+                  label: tForm.trackInventory,
                   checked: product?.trackInventory ?? true,
                 },
                 {
                   name: "allowBackorder",
-                  label: "Allow backorder",
+                  label: tForm.allowBackorder,
                   checked: product?.allowBackorder ?? false,
                 },
                 {
                   name: "isFeatured",
-                  label: "Featured product",
+                  label: tForm.featuredProduct,
                   checked: product?.isFeatured ?? false,
                 },
                 {
                   name: "isNewArrival",
-                  label: "New arrival",
+                  label: tForm.newArrival,
                   checked: product?.isNewArrival ?? false,
                 },
               ].map((item) => (
@@ -444,7 +448,7 @@ export function ProductForm({
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                SEO title
+                {tForm.seoTitle}
               </span>
               <input
                 name="seoTitle"
@@ -455,7 +459,7 @@ export function ProductForm({
 
             <label className="block">
               <span className="text-sm font-semibold text-[#1d1a17]">
-                SEO description
+                {tForm.seoDescription}
               </span>
               <textarea
                 name="seoDescription"

@@ -1,22 +1,24 @@
 import Link from "next/link";
 import { OrderStatus, ProductStatus } from "@prisma/client";
 
+import { formatString, getDictionary, type Locale } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 import { prisma } from "@/lib/prisma";
 
-function formatDate(date: Date | null) {
-  if (!date) {
-    return "Not set";
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
+function formatDate(date: Date | null, locale: Locale, notSet: string) {
+  if (!date) return notSet;
+  return new Intl.DateTimeFormat(locale === "mn" ? "mn-MN" : "en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   }).format(date);
 }
 
-function formatMoney(value: string) {
-  return `${new Intl.NumberFormat("en-US").format(Number(value))} MNT`;
+function formatMoney(value: string, locale: Locale) {
+  const fmt = new Intl.NumberFormat(locale === "mn" ? "mn-MN" : "en-US").format(
+    Number(value),
+  );
+  return locale === "mn" ? `${fmt} ₮` : `${fmt} MNT`;
 }
 
 async function getOverviewData() {
@@ -109,34 +111,35 @@ async function getOverviewData() {
   } catch (error) {
     return {
       ok: false as const,
-      message:
-        error instanceof Error
-          ? error.message
-          : "The admin dashboard could not load the database.",
+      message: error instanceof Error ? error.message : null,
     };
   }
 }
 
 export default async function AdminPage() {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const tOverview = t.admin.overview;
   const overview = await getOverviewData();
 
   if (!overview.ok) {
     return (
       <main className="rounded-[36px] border border-black/10 bg-[#fffaf5] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-          Database setup
+          {tOverview.databaseSetup}
         </p>
         <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#1d1a17]">
-          The admin shell is live, but the data layer is not ready yet.
+          {tOverview.dataNotReadyTitle}
         </h2>
         <p className="mt-5 max-w-2xl text-base leading-8 text-[#625f5a] sm:text-lg">
-          Connect Prisma to your Neon database and make sure the schema has been
-          pushed before loading dashboard data.
+          {tOverview.dataNotReadyCopy}
         </p>
         <div className="mt-8 rounded-[28px] border border-black/10 bg-[#f6f1ea] p-5 text-sm leading-7 text-[#4f4a43]">
           <p>`npm run prisma:generate`</p>
           <p>`npm run db:push`</p>
-          <p className="mt-3 text-[#625f5a]">{overview.message}</p>
+          {overview.message ? (
+            <p className="mt-3 text-[#625f5a]">{overview.message}</p>
+          ) : null}
         </div>
       </main>
     );
@@ -144,24 +147,32 @@ export default async function AdminPage() {
 
   const metricCards = [
     {
-      label: "Products",
+      label: tOverview.products,
       value: overview.summary.totalProducts,
-      note: `${overview.summary.activeProducts} active`,
+      note: formatString(tOverview.productsNote, {
+        count: overview.summary.activeProducts,
+      }),
     },
     {
-      label: "Orders",
+      label: tOverview.orders,
       value: overview.summary.totalOrders,
-      note: `${overview.summary.pendingOrders} in progress`,
+      note: formatString(tOverview.ordersNote, {
+        count: overview.summary.pendingOrders,
+      }),
     },
     {
-      label: "Customers",
+      label: tOverview.customers,
       value: overview.summary.totalUsers,
-      note: `${overview.summary.adminUsers} admins`,
+      note: formatString(tOverview.customersNote, {
+        count: overview.summary.adminUsers,
+      }),
     },
     {
-      label: "Catalog groups",
+      label: tOverview.catalogGroups,
       value: overview.summary.categoryCount,
-      note: `${overview.summary.brandCount} brands`,
+      note: formatString(tOverview.catalogNote, {
+        count: overview.summary.brandCount,
+      }),
     },
   ];
 
@@ -173,30 +184,26 @@ export default async function AdminPage() {
       >
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
-                Overview
-              </p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
+              {tOverview.eyebrow}
+            </p>
             <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#1d1a17] sm:text-5xl">
-              Real data, server-side role checks, and a ready admin foundation.
+              {tOverview.title}
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-8 text-[#625f5a] sm:text-lg">
-              This dashboard reads directly from your Prisma schema so the first
-              version already works as a real control panel instead of a static
-              mock.
+              {tOverview.copy}
             </p>
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="rounded-[28px] border border-black/10 bg-[#f6f1ea] px-5 py-4 text-sm leading-7 text-[#4f4a43]">
-              <p>Auth: Clerk</p>
-              <p>Roles: Prisma `User.role`</p>
-              <p>Bootstrap admin: `ADMIN_EMAILS` or `ADMIN_CLERK_USER_IDS`</p>
+            <div className="rounded-[28px] border border-black/10 bg-[#f6f1ea] px-5 py-4 text-sm leading-7 whitespace-pre-line text-[#4f4a43]">
+              {tOverview.authBlock}
             </div>
             <Link
               href="/admin/products"
               className="inline-flex rounded-full bg-[#8e55cf] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
             >
-              Open product operations
+              {tOverview.openProductOps}
             </Link>
           </div>
         </div>
@@ -223,10 +230,10 @@ export default async function AdminPage() {
           className="rounded-[36px] border border-black/10 bg-[#fffcf8] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10"
         >
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-            Catalog activity
+            {tOverview.catalogActivity}
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#1d1a17] sm:text-4xl">
-            Recently updated products
+            {tOverview.recentlyUpdatedProducts}
           </h2>
           <div className="mt-8 space-y-3">
             {overview.recentProducts.length > 0 ? (
@@ -241,29 +248,29 @@ export default async function AdminPage() {
                         {product.name}
                       </h3>
                       <p className="mt-1 text-sm leading-6 text-[#625f5a]">
-                        SKU: {product.sku ?? "Not set"}
+                        {tOverview.sku}: {product.sku ?? tOverview.notSet}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <span className="rounded-full bg-[#efe4fb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
-                        {product.status}
+                        {t.productStatus[product.status]}
                       </span>
                       {product.isFeatured ? (
                         <span className="rounded-full bg-[#efe4d3] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7b5f3d]">
-                          Featured
+                          {tOverview.featured}
                         </span>
                       ) : null}
                     </div>
                   </div>
                   <p className="mt-3 text-sm text-[#625f5a]">
-                    Updated {formatDate(product.updatedAt)}
+                    {tOverview.updated}{" "}
+                    {formatDate(product.updatedAt, locale, tOverview.notSet)}
                   </p>
                 </article>
               ))
             ) : (
               <div className="rounded-[24px] border border-dashed border-black/10 bg-white px-5 py-6 text-sm leading-7 text-[#625f5a]">
-                No products yet. Once catalog items are added, they will appear
-                here automatically.
+                {tOverview.noProductsYet}
               </div>
             )}
           </div>
@@ -274,10 +281,10 @@ export default async function AdminPage() {
           className="rounded-[36px] border border-black/10 bg-[#f1ece4] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10"
         >
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
-            Order desk
+            {tOverview.orderDesk}
           </p>
           <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#1d1a17]">
-            Latest order flow
+            {tOverview.latestOrderFlow}
           </h2>
           <div className="mt-8 space-y-3">
             {overview.recentOrders.length > 0 ? (
@@ -292,21 +299,22 @@ export default async function AdminPage() {
                         {order.orderNumber}
                       </h3>
                       <p className="mt-1 text-sm leading-6 text-[#625f5a]">
-                        {formatMoney(order.totalAmount.toString())}
+                        {formatMoney(order.totalAmount.toString(), locale)}
                       </p>
                     </div>
                     <span className="rounded-full bg-[#efe4fb] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
-                      {order.status}
+                      {t.orderStatus[order.status] ?? order.status}
                     </span>
                   </div>
                   <p className="mt-3 text-sm text-[#625f5a]">
-                    Created {formatDate(order.createdAt)}
+                    {tOverview.created}{" "}
+                    {formatDate(order.createdAt, locale, tOverview.notSet)}
                   </p>
                 </article>
               ))
             ) : (
               <div className="rounded-[24px] border border-dashed border-black/10 bg-white px-5 py-6 text-sm leading-7 text-[#625f5a]">
-                Orders will appear here as soon as checkout starts writing data.
+                {tOverview.ordersAppearHere}
               </div>
             )}
           </div>
@@ -320,14 +328,13 @@ export default async function AdminPage() {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#dccbf4]">
-              Customer access
+              {tOverview.customerAccess}
             </p>
             <h2 className="mt-4 text-4xl font-semibold tracking-[-0.06em] text-[#f8f2ff] sm:text-5xl">
-              Recent users synced from Clerk into Prisma
+              {tOverview.recentUsersTitle}
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-8 text-[#ece1fb] sm:text-lg">
-              New authenticated users are created in the local `User` table on
-              first access, then the admin check runs against `User.role`.
+              {tOverview.recentUsersCopy}
             </p>
           </div>
         </div>
@@ -338,7 +345,7 @@ export default async function AdminPage() {
               const fullName =
                 [user.firstName, user.lastName].filter(Boolean).join(" ") ||
                 user.email ||
-                "Unnamed user";
+                tOverview.unnamedUser;
 
               return (
                 <article
@@ -351,7 +358,7 @@ export default async function AdminPage() {
                         {fullName}
                       </h3>
                       <p className="mt-1 text-sm leading-6 text-[#ece1fb]">
-                        {user.email ?? "No email on file"}
+                        {user.email ?? tOverview.noEmailOnFile}
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -359,20 +366,20 @@ export default async function AdminPage() {
                         {user.role}
                       </span>
                       <span className="rounded-full border border-white/[0.16] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#f8f2ff]">
-                        {user.isActive ? "Active" : "Disabled"}
+                        {user.isActive ? tOverview.active : tOverview.disabled}
                       </span>
                     </div>
                   </div>
                   <p className="mt-3 text-sm text-[#ece1fb]">
-                    Joined {formatDate(user.createdAt)}
+                    {tOverview.joined}{" "}
+                    {formatDate(user.createdAt, locale, tOverview.notSet)}
                   </p>
                 </article>
               );
             })
           ) : (
             <div className="rounded-[24px] border border-white/[0.12] bg-white/[0.08] px-5 py-6 text-sm leading-7 text-[#ece1fb]">
-              No synced users yet. After a user signs in with Clerk, they will
-              appear here automatically.
+              {tOverview.noSyncedUsers}
             </div>
           )}
         </div>

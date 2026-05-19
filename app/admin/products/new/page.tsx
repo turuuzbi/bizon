@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ProductForm } from "@/components/admin/product-form";
 import { createProductAction } from "@/app/admin/products/actions";
 import { getProductFormOptions } from "@/lib/admin-products";
+import { getDictionary } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n-server";
 
 export default async function NewProductPage({
   searchParams,
@@ -12,6 +14,9 @@ export default async function NewProductPage({
     message?: string;
   }>;
 }) {
+  const locale = await getLocale();
+  const t = getDictionary(locale);
+  const tForm = t.admin.productForm;
   const params = await searchParams;
   const options = await getProductFormOptions();
 
@@ -22,16 +27,16 @@ export default async function NewProductPage({
           href="/admin/products"
           className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-[#2d2a27] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
         >
-          Back to products
+          {tForm.backToProducts}
         </Link>
       </div>
 
       <ProductForm
         action={createProductAction.bind(null, "/admin/products/new")}
-        submitLabel="Create Product"
-        submitPendingLabel="Creating..."
-        title="Add a new product"
-        description="Create the core product record first. Variants, specifications, and imagery can grow from this base cleanly."
+        submitLabel={tForm.createProduct}
+        submitPendingLabel={tForm.creating}
+        title={tForm.newPageTitle}
+        description={tForm.newPageCopy}
         error={params.error}
         message={params.message}
         options={options}
