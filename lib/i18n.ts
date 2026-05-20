@@ -97,7 +97,12 @@ type Dictionary = {
     aboutTitle: string;
     aboutCopy: string;
     companyTitle: string;
-    company: { about: string; careers: string; press: string; partners: string };
+    company: {
+      about: string;
+      careers: string;
+      press: string;
+      partners: string;
+    };
     helpTitle: string;
     help: { faq: string; shipping: string; returns: string; warranty: string };
     contactTitle: string;
@@ -366,9 +371,9 @@ type Dictionary = {
 const dictionaries: Record<Locale, Dictionary> = {
   mn: {
     utility: {
-      hours: "Даваа-Баасан 9:00-19:00 · Бямба 10:00-17:00",
-      delivery: "Хот дотор үнэгүй хүргэлт ₮150,000+",
-      contact: "Холбоо барих: 7711-8899",
+      hours: "Лхагва-Даваа: 9:00-19:00",
+      delivery: "",
+      contact: "Холбоо барих: 94051288 89251288",
     },
     header: {
       searchPlaceholder: "Бараа, брэнд, ангилал хайх...",
@@ -504,15 +509,15 @@ const dictionaries: Record<Locale, Dictionary> = {
         warranty: "Баталгаа",
       },
       contactTitle: "Холбоо барих",
-      address: "Сүхбаатар дүүрэг, Бага тойруу, УБ",
-      phone: "+976 7711-8899",
-      email: "hello@erkas.mn",
+      address: "OУХТ Нарантуул зах, УБ",
+      phone: "+976 94051288",
+      email: "sbolorsaikhan4@gmail.com",
       hoursTitle: "Ажиллах цаг",
-      hoursWeekday: "Даваа-Баасан: 9:00-19:00",
-      hoursSaturday: "Бямба: 10:00-17:00",
-      hoursSunday: "Ням: Амарна",
+      hoursWeekday: "Лхагва-Даваа: 9:00-19:00",
+      hoursSunday: "Мягмар: Амарна",
       rights: "Бүх эрх хуулиар хамгаалагдсан.",
       follow: "Дагах",
+      hoursSaturday: "",
     },
     language: { label: "Хэл", mn: "Монгол", en: "English" },
     productsPage: {
@@ -590,7 +595,8 @@ const dictionaries: Record<Locale, Dictionary> = {
       metaTitle: "Админ | Эрка",
       metaDescription: "Эркагийн админ удирдлага",
       clerkRequiredEyebrow: "Clerk тохиргоо шаардлагатай",
-      clerkRequiredTitle: "Админ хэсэг бэлэн, гэхдээ Clerk түлхүүр шаардлагатай.",
+      clerkRequiredTitle:
+        "Админ хэсэг бэлэн, гэхдээ Clerk түлхүүр шаардлагатай.",
       clerkRequiredCopy:
         "Эхлээд .env файлд Clerk-ийн нийтийн түлхүүр, нууц түлхүүр, чиглүүлэлтийн URL-уудыг нэмнэ үү. Дараа нь `ADMIN_EMAILS`-д орсон имэйлээр нэвтрэх эсвэл `ADMIN_CLERK_USER_IDS`-д өөрийнхөө Clerk ID-г нэмж админ эрхийг идэвхжүүлнэ үү.",
       backToStorefront: "Дэлгүүр рүү буцах",
@@ -617,9 +623,9 @@ const dictionaries: Record<Locale, Dictionary> = {
           "Prisma-г Neon өгөгдлийн сантай холбож, схемийг push хийсэн эсэхийг шалгана уу.",
         eyebrow: "Тойм",
         title: "Жинхэнэ өгөгдөл, сервер талын эрх шалгалт, бэлэн админ суурь.",
-        copy:
-          "Энэ хяналтын самбар Prisma схемээс шууд уншдаг тул статик загвар биш бодит ажилладаг.",
-        authBlock: "Auth: Clerk\nЭрх: Prisma `User.role`\nҮндсэн админ: `ADMIN_EMAILS` эсвэл `ADMIN_CLERK_USER_IDS`",
+        copy: "Энэ хяналтын самбар Prisma схемээс шууд уншдаг тул статик загвар биш бодит ажилладаг.",
+        authBlock:
+          "Auth: Clerk\nЭрх: Prisma `User.role`\nҮндсэн админ: `ADMIN_EMAILS` эсвэл `ADMIN_CLERK_USER_IDS`",
         openProductOps: "Барааны үйл ажиллагаа нээх",
         products: "Бараа",
         orders: "Захиалга",
@@ -640,10 +646,10 @@ const dictionaries: Record<Locale, Dictionary> = {
         orderDesk: "Захиалгын ширээ",
         latestOrderFlow: "Сүүлийн захиалгын урсгал",
         created: "Үүсгэсэн",
-        ordersAppearHere:
-          "Захиалга үүсэх бүрд энд харагдана.",
+        ordersAppearHere: "Захиалга үүсэх бүрд энд харагдана.",
         customerAccess: "Харилцагчийн хандалт",
-        recentUsersTitle: "Clerk-аас Prisma руу синхрончлогдсон шинэ хэрэглэгчид",
+        recentUsersTitle:
+          "Clerk-аас Prisma руу синхрончлогдсон шинэ хэрэглэгчид",
         recentUsersCopy:
           "Шинэ хэрэглэгчид анх хандах үед локал `User` хүснэгтэд үүсэж, дараа нь `User.role` дээр админ шалгалт ажилладаг.",
         noEmailOnFile: "Имэйл бүртгэлгүй",
@@ -658,8 +664,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       productOps: {
         eyebrow: "Барааны үйл ажиллагаа",
         title: "Бараа, ангилал, Excel импортыг удирдана.",
-        copy:
-          "Энэ хэсэгт Prisma схемийн эсрэг бодит үүсгэх, засах, устгах, Excel импортын урсгалууд ажиллана.",
+        copy: "Энэ хэсэгт Prisma схемийн эсрэг бодит үүсгэх, засах, устгах, Excel импортын урсгалууд ажиллана.",
         addProduct: "Бараа нэмэх",
         downloadTemplate: "Загвар татах",
         allProducts: "Бүх бараа",
@@ -714,8 +719,7 @@ const dictionaries: Record<Locale, Dictionary> = {
         newPageTitle: "Шинэ бараа нэмэх",
         newPageCopy:
           "Эхлээд үндсэн бараа үүсгэе. Хувилбар, нарийвчилсан мэдээлэл, зургийг дараа нэмж болно.",
-        editPageCopy:
-          "Үндсэн мэдээлэл, ангилал, онцлох тэмдэглэгээг засна уу.",
+        editPageCopy: "Үндсэн мэдээлэл, ангилал, онцлох тэмдэглэгээг засна уу.",
         createProduct: "Бараа үүсгэх",
         creating: "Үүсгэж байна...",
         saveChanges: "Хадгалах",
@@ -780,8 +784,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     signInPage: {
       eyebrow: "Эркагийн данс",
       title: "Бүртгэлтэй захиалга, каталог, админ хандалтад нэвтэрнэ үү.",
-      copy:
-        "Эхлээд Clerk нэвтрэлтийг шалгаж, дараа нь Эрка дансыг локал Prisma `User` хүснэгтэд синхрончилно.",
+      copy: "Эхлээд Clerk нэвтрэлтийг шалгаж, дараа нь Эрка дансыг локал Prisma `User` хүснэгтэд синхрончилно.",
       feature1: "Аюулгүй нэвтрэлт",
       feature2: "Эрхтэй админ",
       feature3: "Neon + Prisma",
@@ -790,8 +793,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     signUpPage: {
       eyebrow: "Эркагийн данс",
       title: "Каталог, төслийн ажилд зориулсан данс үүсгэнэ үү.",
-      copy:
-        "Шинэ хэрэглэгчид анх хандах үед Prisma-д синхрончлогдоно. Үндсэн админ тохиргоонд тохирвол админ эрх автоматаар нээгдэнэ.",
+      copy: "Шинэ хэрэглэгчид анх хандах үед Prisma-д синхрончлогдоно. Үндсэн админ тохиргоонд тохирвол админ эрх автоматаар нээгдэнэ.",
       feature1: "Харилцагчийн данс",
       feature2: "Худалдааны эрхүүд",
       feature3: "Админ үндсэн тохиргоо",
@@ -876,7 +878,10 @@ const dictionaries: Record<Locale, Dictionary> = {
       viewAll: "Open full catalog",
     },
     promoStrip: {
-      fastDelivery: { title: "Fast delivery", copy: "Citywide within 24 hours" },
+      fastDelivery: {
+        title: "Fast delivery",
+        copy: "Citywide within 24 hours",
+      },
       bulkOrders: {
         title: "Bulk orders",
         copy: "Trade pricing and invoices",
@@ -969,8 +974,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       metaDescription:
         "Browse the Erka's catalog in a clean, photo-ready product viewer.",
       eyebrow: "Product catalog",
-      title:
-        "Browse by department, then narrow the list with search and sort.",
+      title: "Browse by department, then narrow the list with search and sort.",
       subtitle:
         "The layout stays simple on purpose: categories first, filters second, and image-ready cards.",
       statsResults: "Results",
@@ -1003,8 +1007,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       badgeNew: "New",
       noResults: "No results",
       noProductsMatch: "No products match this view.",
-      noMatchInCategory:
-        "Nothing matched the current filters inside {name}.",
+      noMatchInCategory: "Nothing matched the current filters inside {name}.",
       noMatchHint: "Try another category, search term, or status filter.",
       resetFilters: "Reset filters",
     },
@@ -1071,8 +1074,7 @@ const dictionaries: Record<Locale, Dictionary> = {
         eyebrow: "Overview",
         title:
           "Real data, server-side role checks, and a ready admin foundation.",
-        copy:
-          "This dashboard reads directly from your Prisma schema so the first version already works as a real control panel instead of a static mock.",
+        copy: "This dashboard reads directly from your Prisma schema so the first version already works as a real control panel instead of a static mock.",
         authBlock:
           "Auth: Clerk\nRoles: Prisma `User.role`\nBootstrap admin: `ADMIN_EMAILS` or `ADMIN_CLERK_USER_IDS`",
         openProductOps: "Open product operations",
@@ -1113,8 +1115,7 @@ const dictionaries: Record<Locale, Dictionary> = {
       productOps: {
         eyebrow: "Product operations",
         title: "Manage products, categories, and spreadsheet imports.",
-        copy:
-          "This workspace handles real create, edit, delete, and Excel import flows against your Prisma schema, including brand and category linking.",
+        copy: "This workspace handles real create, edit, delete, and Excel import flows against your Prisma schema, including brand and category linking.",
         addProduct: "Add Product",
         downloadTemplate: "Download Template",
         allProducts: "All products",
@@ -1234,10 +1235,8 @@ const dictionaries: Record<Locale, Dictionary> = {
     },
     signInPage: {
       eyebrow: "Erka's account",
-      title:
-        "Sign in for saved orders, catalog access, and admin control.",
-      copy:
-        "Clerk handles authentication first, then Erka's syncs the account into the local Prisma `User` table for role checks and admin access.",
+      title: "Sign in for saved orders, catalog access, and admin control.",
+      copy: "Clerk handles authentication first, then Erka's syncs the account into the local Prisma `User` table for role checks and admin access.",
       feature1: "Secure sign-in",
       feature2: "Role-based admin",
       feature3: "Neon + Prisma",
@@ -1246,8 +1245,7 @@ const dictionaries: Record<Locale, Dictionary> = {
     signUpPage: {
       eyebrow: "Erka's account",
       title: "Create an account for catalog access and project workflows.",
-      copy:
-        "New users are synced into Prisma on first access, and admin access is unlocked automatically when the account matches your bootstrap admin settings.",
+      copy: "New users are synced into Prisma on first access, and admin access is unlocked automatically when the account matches your bootstrap admin settings.",
       feature1: "Customer accounts",
       feature2: "Trade-ready roles",
       feature3: "Admin bootstrap",
@@ -1264,7 +1262,8 @@ const dictionaries: Record<Locale, Dictionary> = {
       sendLabel: "Send message",
       thinking: "Thinking...",
       fallbackError: "The assistant could not respond.",
-      fallbackEmpty: "I could not find a clear answer yet. Could you share more detail?",
+      fallbackEmpty:
+        "I could not find a clear answer yet. Could you share more detail?",
       messageLabel: "Message product assistant",
     },
   },
@@ -1274,7 +1273,10 @@ export function getDictionary(locale: Locale): Dictionary {
   return dictionaries[locale];
 }
 
-export function formatString(template: string, vars: Record<string, string | number>) {
+export function formatString(
+  template: string,
+  vars: Record<string, string | number>,
+) {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => {
     const value = vars[key];
     return value === undefined || value === null ? `{${key}}` : String(value);
