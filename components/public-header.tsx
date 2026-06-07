@@ -74,23 +74,6 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
               </svg>
               {t.utility.hours}
             </span>
-            <span className="hidden items-center gap-1.5 lg:inline-flex">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-3.5 w-3.5"
-              >
-                <path d="M1 3h15v13H1z" />
-                <path d="M16 8h4l3 3v5h-7z" />
-                <circle cx="5.5" cy="18.5" r="2.5" />
-                <circle cx="18.5" cy="18.5" r="2.5" />
-              </svg>
-              {t.utility.delivery}
-            </span>
             <span className="inline-flex items-center gap-1.5">
               <svg
                 viewBox="0 0 24 24"
