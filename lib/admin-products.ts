@@ -36,6 +36,12 @@ type ProductMutationInput = {
   primaryCategoryName?: string | null;
   imageEntries?: ProductImageInput[];
   metadata?: Prisma.InputJsonValue;
+  /** Price for the product's default sellable variant (major currency units). */
+  defaultPrice?: number | null;
+  /** Stock for the default variant. Null/undefined => stock untracked. */
+  defaultQuantity?: number | null;
+  /** Optional label for the default variant (e.g. a size). */
+  defaultVariantTitle?: string | null;
 };
 
 type ResolvedProductInput = {
@@ -446,6 +452,8 @@ export function parseManualProductFormData(formData: FormData): ProductMutationI
     primaryCategoryId: formData.get("primaryCategoryId")?.toString() ?? "",
     primaryCategoryName: "",
     imageEntries: parseImageEntriesText(formData.get("imageEntries")?.toString()),
+    defaultPrice: parseNumberValue(formData.get("price")?.toString()),
+    defaultQuantity: parseNumberValue(formData.get("stockQuantity")?.toString()),
   };
 }
 
@@ -576,6 +584,9 @@ function parseSpreadsheetRow(row: Record<string, unknown>): ProductMutationInput
     imageEntries: parseImageEntriesText(
       getRowValue(row, ["images", "imageUrls", "image_urls"])?.toString(),
     ),
+    defaultPrice: unitPrice,
+    defaultQuantity: quantity,
+    defaultVariantTitle: cleanText(sizeValue),
     metadata:
       Object.keys(metadataEntries).length > 0 || cleanText(sizeValue)
         ? ({
@@ -645,6 +656,55 @@ async function syncProductImages(
   });
 }
 
+/**
+ * Create or update the product's default sellable variant from the mutation
+ * input. Price and stock live on ProductVariant — without this a product can
+ * never be priced or purchased on the storefront. Behaviour:
+ *  - no positive price => leave variants untouched (nothing to sell yet)
+ *  - quantity provided  => track inventory at that count
+ *  - quantity omitted    => untracked (always available)
+ */
+async function syncDefaultVariant(
+  tx: Prisma.TransactionClient,
+  productId: string,
+  input: ProductMutationInput,
+  baseUnit: UnitType,
+) {
+  const price = input.defaultPrice;
+
+  if (typeof price !== "number" || !Number.isFinite(price) || price <= 0) {
+    return;
+  }
+
+  const hasQuantity =
+    typeof input.defaultQuantity === "number" &&
+    Number.isFinite(input.defaultQuantity);
+  const title = cleanText(input.defaultVariantTitle) ?? "Default";
+
+  const fields = {
+    title,
+    price: new Prisma.Decimal(price),
+    inventoryQuantity: hasQuantity ? Math.trunc(input.defaultQuantity as number) : 0,
+    trackInventory: hasQuantity ? input.trackInventory ?? true : false,
+    allowBackorder: input.allowBackorder ?? false,
+    unitType: baseUnit,
+    isActive: true,
+    isDefault: true,
+  };
+
+  const existing = await tx.productVariant.findFirst({
+    where: { productId },
+    orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+    select: { id: true },
+  });
+
+  if (existing) {
+    await tx.productVariant.update({ where: { id: existing.id }, data: fields });
+  } else {
+    await tx.productVariant.create({ data: { productId, ...fields } });
+  }
+}
+
 export async function createProduct(input: ProductMutationInput) {
   const resolved = await resolveProductInput(input);
   const imageEntries = input.imageEntries ?? [];
@@ -666,6 +726,7 @@ export async function createProduct(input: ProductMutationInput) {
     }
 
     await syncProductImages(tx, product.id, imageEntries);
+    await syncDefaultVariant(tx, product.id, input, product.baseUnit);
 
     return product;
   });
@@ -712,6 +773,7 @@ export async function updateProduct(productId: string, input: ProductMutationInp
     }
 
     await syncProductImages(tx, productId, imageEntries);
+    await syncDefaultVariant(tx, productId, input, product.baseUnit);
 
     return product;
   });
@@ -934,6 +996,15 @@ export async function getEditableProduct(productId: string) {
           altText: true,
           isPrimary: true,
           position: true,
+        },
+      },
+      variants: {
+        orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+        take: 1,
+        select: {
+          price: true,
+          inventoryQuantity: true,
+          trackInventory: true,
         },
       },
     },

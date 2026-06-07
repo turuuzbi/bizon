@@ -155,6 +155,58 @@ type Dictionary = {
     noMatchHint: string;
     resetFilters: string;
   };
+  pdp: {
+    home: string;
+    allProducts: string;
+    inStock: string;
+    lowStock: string;
+    outOfStock: string;
+    backorder: string;
+    unavailable: string;
+    addToCart: string;
+    added: string;
+    buyNow: string;
+    quantity: string;
+    wishlistAdd: string;
+    wishlistRemove: string;
+    share: string;
+    shareCopied: string;
+    soldBy: string;
+    options: string;
+    from: string;
+    save: string;
+    highlightsTitle: string;
+    highlightsSubtitle: string;
+    descriptionTitle: string;
+    readMore: string;
+    readLess: string;
+    specsTitle: string;
+    specsSearch: string;
+    specsNone: string;
+    showAll: string;
+    showLess: string;
+    reviewsTitle: string;
+    reviewsBasedOn: string;
+    noReviews: string;
+    verified: string;
+    sortLabel: string;
+    sortNewest: string;
+    sortHighest: string;
+    sortLowest: string;
+    filterAll: string;
+    relatedTitle: string;
+    recentlyViewedTitle: string;
+    deliveryTitle: string;
+    deliveryCopy: string;
+    returnsTitle: string;
+    returnsCopy: string;
+    secureTitle: string;
+    secureCopy: string;
+    ratingLabel: string;
+    notFoundTitle: string;
+    notFoundCopy: string;
+    backToCatalog: string;
+  };
   productStatus: {
     DRAFT: string;
     ACTIVE: string;
@@ -288,6 +340,12 @@ type Dictionary = {
       baseUnit: string;
       shortDescription: string;
       fullDescription: string;
+      pricingEyebrow: string;
+      price: string;
+      priceHint: string;
+      stockQuantity: string;
+      stockHint: string;
+      stockPlaceholder: string;
       brand: string;
       noBrandSelected: string;
       newBrandName: string;
@@ -360,6 +418,79 @@ type Dictionary = {
     fallbackError: string;
     fallbackEmpty: string;
     messageLabel: string;
+  };
+  cart: {
+    title: string;
+    emptyTitle: string;
+    emptyCopy: string;
+    browse: string;
+    signInTitle: string;
+    signInCopy: string;
+    signIn: string;
+    remove: string;
+    subtotal: string;
+    itemCount: string;
+    checkout: string;
+    continue: string;
+    each: string;
+  };
+  checkout: {
+    title: string;
+    emptyTitle: string;
+    emptyCopy: string;
+    contactTitle: string;
+    shippingTitle: string;
+    recipientName: string;
+    phone: string;
+    city: string;
+    district: string;
+    line1: string;
+    line2: string;
+    note: string;
+    notePlaceholder: string;
+    summaryTitle: string;
+    subtotal: string;
+    shipping: string;
+    shippingTbd: string;
+    total: string;
+    placeOrder: string;
+    placing: string;
+    paymentNote: string;
+    backToCart: string;
+    successTitle: string;
+    successCopy: string;
+    orderNumber: string;
+    viewProducts: string;
+  };
+  orders: {
+    title: string;
+    emptyTitle: string;
+    emptyCopy: string;
+    browse: string;
+    signInTitle: string;
+    signInCopy: string;
+    signIn: string;
+    placedOn: string;
+    total: string;
+    paymentLabel: string;
+    status: {
+      PENDING: string;
+      CONFIRMED: string;
+      PROCESSING: string;
+      READY_TO_SHIP: string;
+      SHIPPED: string;
+      DELIVERED: string;
+      CANCELLED: string;
+      REFUNDED: string;
+    };
+    payment: {
+      PENDING: string;
+      AUTHORIZED: string;
+      PAID: string;
+      PARTIALLY_REFUNDED: string;
+      REFUNDED: string;
+      FAILED: string;
+    };
   };
 };
 
@@ -555,6 +686,58 @@ const dictionaries: Record<Locale, Dictionary> = {
       noMatchHint: "Өөр ангилал, хайлт эсвэл төлөв сонгоно уу.",
       resetFilters: "Шүүлтүүр цэвэрлэх",
     },
+    pdp: {
+      home: "Нүүр",
+      allProducts: "Бүх бараа",
+      inStock: "Нөөцтэй",
+      lowStock: "Зөвхөн {n} ширхэг үлдсэн",
+      outOfStock: "Дууссан",
+      backorder: "Урьдчилсан захиалгаар",
+      unavailable: "Одоогоор боломжгүй",
+      addToCart: "Сагсанд нэмэх",
+      added: "Нэмэгдсэн",
+      buyNow: "Шууд авах",
+      quantity: "Тоо ширхэг",
+      wishlistAdd: "Хадгалах",
+      wishlistRemove: "Хадгалсан",
+      share: "Хуваалцах",
+      shareCopied: "Холбоос хуулагдлаа",
+      soldBy: "Брэнд",
+      options: "Сонголт",
+      from: "-аас",
+      save: "{pct}% хэмнэнэ",
+      highlightsTitle: "Онцлох давуу талууд",
+      highlightsSubtitle: "Хамгийн чухал мэдээллийг нэг дороос.",
+      descriptionTitle: "Барааны дэлгэрэнгүй",
+      readMore: "Дэлгэрэнгүй унших",
+      readLess: "Хураах",
+      specsTitle: "Үзүүлэлт",
+      specsSearch: "Үзүүлэлт хайх",
+      specsNone: "Хайлтад тохирох үзүүлэлт алга.",
+      showAll: "Бүгдийг харах",
+      showLess: "Хураах",
+      reviewsTitle: "Үнэлгээ ба сэтгэгдэл",
+      reviewsBasedOn: "{count} сэтгэгдэлд үндэслэв",
+      noReviews: "Одоогоор сэтгэгдэл алга. Хамгийн түрүүнд сэтгэгдлээ үлдээгээрэй.",
+      verified: "Баталгаажсан худалдан авалт",
+      sortLabel: "Эрэмбэлэх",
+      sortNewest: "Шинэ нь эхэнд",
+      sortHighest: "Өндөр үнэлгээ",
+      sortLowest: "Бага үнэлгээ",
+      filterAll: "Бүх үнэлгээ",
+      relatedTitle: "Танд таалагдаж магадгүй",
+      recentlyViewedTitle: "Саяхан үзсэн",
+      deliveryTitle: "Хурдан хүргэлт",
+      deliveryCopy: "Нөөцтэй бараанд хот дотор 24 цагт хүргэнэ.",
+      returnsTitle: "Хялбар буцаалт",
+      returnsCopy: "Ашиглаагүй бараанд 14 хоногийн буцаалт.",
+      secureTitle: "Найдвартай төлбөр",
+      secureCopy: "Карт, шилжүүлэг, эсвэл хүргэлтээр бэлнээр.",
+      ratingLabel: "5-аас {avg}",
+      notFoundTitle: "Бараа олдсонгүй",
+      notFoundCopy: "Энэ бараа устсан эсвэл хаяг буруу байж магадгүй.",
+      backToCatalog: "Каталог руу буцах",
+    },
     productStatus: {
       DRAFT: "Ноорог",
       ACTIVE: "Идэвхтэй",
@@ -730,6 +913,14 @@ const dictionaries: Record<Locale, Dictionary> = {
         baseUnit: "Үндсэн нэгж",
         shortDescription: "Богино тайлбар",
         fullDescription: "Бүрэн тайлбар",
+        pricingEyebrow: "Үнэ ба нөөц",
+        price: "Үнэ (₮)",
+        priceHint:
+          "Нэгжийн үнэ. Хоосон бол бараа нь дэлгүүрт 'боломжгүй' гэж харагдана.",
+        stockQuantity: "Нөөцийн тоо",
+        stockHint:
+          "Хоосон бол нөөц хянахгүй (үргэлж бэлэн). Тоо оруулбал тухайн тоогоор хянана.",
+        stockPlaceholder: "Хоосон = үргэлж бэлэн",
         brand: "Брэнд",
         noBrandSelected: "Брэнд сонгоогүй",
         newBrandName: "Шинэ брэндийн нэр",
@@ -810,6 +1001,81 @@ const dictionaries: Record<Locale, Dictionary> = {
       fallbackError: "Туслах хариу өгч чадсангүй.",
       fallbackEmpty: "Тодорхой хариу олдсонгүй. Илүү дэлгэрэнгүй хэлж өгнө үү?",
       messageLabel: "Барааны туслах руу мессеж бичих",
+    },
+    cart: {
+      title: "Таны сагс",
+      emptyTitle: "Таны сагс хоосон байна",
+      emptyCopy: "Манай каталогоос бараа нэмж эхлээрэй.",
+      browse: "Бараа үзэх",
+      signInTitle: "Сагсаа харахын тулд нэвтэрнэ үү",
+      signInCopy: "Сагс таны бүртгэлд хадгалагдана.",
+      signIn: "Нэвтрэх",
+      remove: "Устгах",
+      subtotal: "Дэд дүн",
+      itemCount: "{count} бараа",
+      checkout: "Төлбөр рүү шилжих",
+      continue: "Үргэлжлүүлэн дэлгүүр хэсэх",
+      each: "ширхэг тус бүр",
+    },
+    checkout: {
+      title: "Төлбөр",
+      emptyTitle: "Таны сагс хоосон байна",
+      emptyCopy: "Захиалга өгөхийн тулд эхлээд бараа нэмнэ үү.",
+      contactTitle: "Холбоо барих",
+      shippingTitle: "Хүргэлтийн хаяг",
+      recipientName: "Хүлээн авагчийн нэр",
+      phone: "Утасны дугаар",
+      city: "Хот / Аймаг",
+      district: "Дүүрэг / Сум",
+      line1: "Хаяг",
+      line2: "Хаяг (нэмэлт)",
+      note: "Захиалгын тэмдэглэл",
+      notePlaceholder: "Хүргэлтийн заавар гэх мэт (сонголтоор)",
+      summaryTitle: "Захиалгын тойм",
+      subtotal: "Дэд дүн",
+      shipping: "Хүргэлт",
+      shippingTbd: "Тооцоологдоно",
+      total: "Нийт дүн",
+      placeOrder: "Захиалга өгөх",
+      placing: "Илгээж байна…",
+      paymentNote:
+        "Төлбөрийг (QPay) захиалга өгсний дараа зохион байгуулна.",
+      backToCart: "Сагс руу буцах",
+      successTitle: "Захиалга хүлээн авлаа",
+      successCopy:
+        "Баярлалаа. Бид тантай удахгүй холбогдож төлбөрийг баталгаажуулна.",
+      orderNumber: "Захиалгын дугаар",
+      viewProducts: "Бараа үзэх",
+    },
+    orders: {
+      title: "Миний захиалга",
+      emptyTitle: "Захиалга алга байна",
+      emptyCopy: "Та одоогоор захиалга өгөөгүй байна.",
+      browse: "Бараа үзэх",
+      signInTitle: "Захиалгаа харахын тулд нэвтэрнэ үү",
+      signInCopy: "Захиалга таны бүртгэлд хадгалагдана.",
+      signIn: "Нэвтрэх",
+      placedOn: "Огноо",
+      total: "Нийт дүн",
+      paymentLabel: "Төлбөр",
+      status: {
+        PENDING: "Хүлээгдэж буй",
+        CONFIRMED: "Баталгаажсан",
+        PROCESSING: "Боловсруулж буй",
+        READY_TO_SHIP: "Илгээхэд бэлэн",
+        SHIPPED: "Илгээсэн",
+        DELIVERED: "Хүргэгдсэн",
+        CANCELLED: "Цуцалсан",
+        REFUNDED: "Буцаасан",
+      },
+      payment: {
+        PENDING: "Төлбөр хүлээгдэж буй",
+        AUTHORIZED: "Зөвшөөрсөн",
+        PAID: "Төлсөн",
+        PARTIALLY_REFUNDED: "Хэсэгчлэн буцаасан",
+        REFUNDED: "Буцаасан",
+        FAILED: "Амжилтгүй",
+      },
     },
   },
   en: {
@@ -1008,6 +1274,58 @@ const dictionaries: Record<Locale, Dictionary> = {
       noMatchHint: "Try another category, search term, or status filter.",
       resetFilters: "Reset filters",
     },
+    pdp: {
+      home: "Home",
+      allProducts: "All products",
+      inStock: "In stock",
+      lowStock: "Only {n} left",
+      outOfStock: "Out of stock",
+      backorder: "Available on backorder",
+      unavailable: "Currently unavailable",
+      addToCart: "Add to cart",
+      added: "Added to cart",
+      buyNow: "Buy now",
+      quantity: "Quantity",
+      wishlistAdd: "Save",
+      wishlistRemove: "Saved",
+      share: "Share",
+      shareCopied: "Link copied",
+      soldBy: "Brand",
+      options: "Options",
+      from: "From",
+      save: "Save {pct}%",
+      highlightsTitle: "Why you'll love it",
+      highlightsSubtitle: "The details that matter, at a glance.",
+      descriptionTitle: "Product details",
+      readMore: "Read more",
+      readLess: "Read less",
+      specsTitle: "Specifications",
+      specsSearch: "Search specifications",
+      specsNone: "No specifications match your search.",
+      showAll: "Show all",
+      showLess: "Show less",
+      reviewsTitle: "Ratings & reviews",
+      reviewsBasedOn: "Based on {count} reviews",
+      noReviews: "No reviews yet. Be the first to share your experience.",
+      verified: "Verified purchase",
+      sortLabel: "Sort",
+      sortNewest: "Most recent",
+      sortHighest: "Highest rated",
+      sortLowest: "Lowest rated",
+      filterAll: "All ratings",
+      relatedTitle: "You may also like",
+      recentlyViewedTitle: "Recently viewed",
+      deliveryTitle: "Fast delivery",
+      deliveryCopy: "Citywide within 24 hours on in-stock items.",
+      returnsTitle: "Easy returns",
+      returnsCopy: "14-day returns on unused items.",
+      secureTitle: "Secure checkout",
+      secureCopy: "Card, transfer, or cash on delivery.",
+      ratingLabel: "{avg} out of 5",
+      notFoundTitle: "Product not found",
+      notFoundCopy: "This product may have been removed or the link is incorrect.",
+      backToCatalog: "Back to catalog",
+    },
     productStatus: {
       DRAFT: "Draft",
       ACTIVE: "Active",
@@ -1185,6 +1503,14 @@ const dictionaries: Record<Locale, Dictionary> = {
         baseUnit: "Base unit",
         shortDescription: "Short description",
         fullDescription: "Full description",
+        pricingEyebrow: "Pricing & stock",
+        price: "Price (₮)",
+        priceHint:
+          "Unit price. Leave empty and the product shows as 'unavailable' on the storefront.",
+        stockQuantity: "Stock quantity",
+        stockHint:
+          "Leave empty for untracked stock (always available). Enter a number to track inventory at that count.",
+        stockPlaceholder: "Empty = always available",
         brand: "Brand",
         noBrandSelected: "No brand selected",
         newBrandName: "New brand name",
@@ -1266,6 +1592,81 @@ const dictionaries: Record<Locale, Dictionary> = {
       fallbackError: "The assistant could not respond.",
       fallbackEmpty: "I could not find a clear answer yet. Could you share more detail?",
       messageLabel: "Message product assistant",
+    },
+    cart: {
+      title: "Your cart",
+      emptyTitle: "Your cart is empty",
+      emptyCopy: "Start adding products from our catalog.",
+      browse: "Browse products",
+      signInTitle: "Sign in to view your cart",
+      signInCopy: "Your cart is saved to your account.",
+      signIn: "Sign in",
+      remove: "Remove",
+      subtotal: "Subtotal",
+      itemCount: "{count} items",
+      checkout: "Proceed to checkout",
+      continue: "Continue shopping",
+      each: "each",
+    },
+    checkout: {
+      title: "Checkout",
+      emptyTitle: "Your cart is empty",
+      emptyCopy: "Add some products before placing an order.",
+      contactTitle: "Contact",
+      shippingTitle: "Shipping address",
+      recipientName: "Recipient name",
+      phone: "Phone number",
+      city: "City / Province",
+      district: "District / Sum",
+      line1: "Address",
+      line2: "Address line 2",
+      note: "Order note",
+      notePlaceholder: "Delivery instructions, etc. (optional)",
+      summaryTitle: "Order summary",
+      subtotal: "Subtotal",
+      shipping: "Shipping",
+      shippingTbd: "Calculated later",
+      total: "Total",
+      placeOrder: "Place order",
+      placing: "Placing…",
+      paymentNote:
+        "Payment (QPay) will be arranged after you place the order.",
+      backToCart: "Back to cart",
+      successTitle: "Order received",
+      successCopy:
+        "Thank you. We'll be in touch shortly to confirm payment.",
+      orderNumber: "Order number",
+      viewProducts: "Browse products",
+    },
+    orders: {
+      title: "My orders",
+      emptyTitle: "No orders yet",
+      emptyCopy: "You haven't placed any orders yet.",
+      browse: "Browse products",
+      signInTitle: "Sign in to view your orders",
+      signInCopy: "Your orders are saved to your account.",
+      signIn: "Sign in",
+      placedOn: "Placed",
+      total: "Total",
+      paymentLabel: "Payment",
+      status: {
+        PENDING: "Pending",
+        CONFIRMED: "Confirmed",
+        PROCESSING: "Processing",
+        READY_TO_SHIP: "Ready to ship",
+        SHIPPED: "Shipped",
+        DELIVERED: "Delivered",
+        CANCELLED: "Cancelled",
+        REFUNDED: "Refunded",
+      },
+      payment: {
+        PENDING: "Payment pending",
+        AUTHORIZED: "Authorized",
+        PAID: "Paid",
+        PARTIALLY_REFUNDED: "Partially refunded",
+        REFUNDED: "Refunded",
+        FAILED: "Failed",
+      },
     },
   },
 };

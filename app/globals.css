@@ -1,23 +1,32 @@
 @import "tailwindcss";
 
 :root {
+  /* Apple-leaning neutrals: near-black ink, the signature #f5f5f7 gray. */
   --background: #ffffff;
-  --foreground: #1f1828;
-  --muted: #655c69;
-  --accent: #8e55cf;
-  --accent-strong: #7d45c1;
-  --surface: #fbf8f4;
+  --foreground: #1d1d1f;
+  --muted: #6e6e73;
+  --muted-soft: #9b9ba3;
+  --accent: #7c3aed;
+  --accent-strong: #6d28d9;
+  --accent-tint: #f3f0fe;
+  --surface: #f5f5f7;
+  --surface-2: #f5f5f7;
+  --border: rgba(29, 29, 31, 0.08);
+  --border-strong: rgba(29, 29, 31, 0.14);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
+  --color-accent-tint: var(--accent-tint);
   --color-surface: var(--surface);
-  --font-sans: var(--font-manrope);
+  --color-surface-2: var(--surface-2);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-inter);
 }
 
 * {
@@ -32,7 +41,9 @@ body {
   min-height: 100vh;
   background: #ffffff;
   color: var(--foreground);
-  font-family: var(--font-manrope), sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
 h1,
@@ -41,12 +52,19 @@ h3 {
   text-wrap: balance;
 }
 
+/* Apple-style headlines: heavy weight, tight tracking. :where keeps specificity
+   at 0 so per-element tracking utilities still win. */
+:where(h1, h2, h3, h4) {
+  font-weight: 600;
+  letter-spacing: -0.022em;
+}
+
 p {
   text-wrap: pretty;
 }
 
 ::selection {
-  background: rgba(142, 85, 207, 0.2);
+  background: rgba(124, 58, 237, 0.18);
   color: var(--foreground);
 }
 

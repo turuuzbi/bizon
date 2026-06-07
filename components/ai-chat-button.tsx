@@ -105,14 +105,14 @@ export function AiChatButton() {
       {isOpen ? (
         <section
           aria-label={t.chat.title}
-          className="flex h-[min(70vh,36rem)] w-[min(calc(100vw-2.5rem),24rem)] flex-col overflow-hidden rounded-lg border border-[#d8cfc4] bg-[#fffaf4] shadow-[0_22px_70px_rgba(30,24,28,0.24)]"
+          className="flex h-[min(70vh,36rem)] w-[min(calc(100vw-2.5rem),24rem)] flex-col overflow-hidden rounded-lg border border-[#e6e6e8] bg-[#ffffff] shadow-[0_22px_70px_rgba(30,24,28,0.24)]"
         >
-          <div className="flex items-center justify-between gap-3 border-b border-[#e7ded4] bg-[#f5ede4] px-4 py-3">
+          <div className="flex items-center justify-between gap-3 border-b border-[#e6e6e8] bg-[#f5f5f7] px-4 py-3">
             <div>
-              <p className="text-sm font-semibold text-[#241c21]">
+              <p className="text-sm font-semibold text-[#1d1d1f]">
                 {t.chat.title}
               </p>
-              <p className="mt-0.5 text-xs text-[#675e63]">
+              <p className="mt-0.5 text-xs text-[#6e6e73]">
                 {t.chat.subtitle}
               </p>
             </div>
@@ -120,7 +120,7 @@ export function AiChatButton() {
               type="button"
               aria-label={t.chat.closeLabel}
               onClick={() => setIsOpen(false)}
-              className="grid size-8 place-items-center rounded-full text-[#5f5560] transition hover:bg-[#eadfd4] hover:text-[#241c21] focus:outline-none focus:ring-3 focus:ring-[#b691dd]/35"
+              className="grid size-8 place-items-center rounded-full text-[#6e6e73] transition hover:bg-[#ececee] hover:text-[#1d1d1f] focus:outline-none focus:ring-3 focus:ring-[#a78bfa]/35"
             >
               <svg
                 aria-hidden="true"
@@ -149,8 +149,8 @@ export function AiChatButton() {
                 <div
                   className={`max-w-[85%] rounded-lg px-3 py-2 text-sm leading-6 ${
                     message.role === "user"
-                      ? "bg-[#3b2f43] text-white"
-                      : "border border-[#eadfd4] bg-[#fbf8f4] text-[#352d33]"
+                      ? "bg-[#18181b] text-white"
+                      : "border border-[#ececee] bg-[#f5f5f7] text-[#1c1c22]"
                   }`}
                 >
                   {message.content}
@@ -160,7 +160,7 @@ export function AiChatButton() {
 
             {isSending ? (
               <div className="flex justify-start">
-                <div className="rounded-lg border border-[#eadfd4] bg-[#fbf8f4] px-3 py-2 text-sm text-[#675e63]">
+                <div className="rounded-lg border border-[#ececee] bg-[#f5f5f7] px-3 py-2 text-sm text-[#6e6e73]">
                   {t.chat.thinking}
                 </div>
               </div>
@@ -170,14 +170,14 @@ export function AiChatButton() {
           </div>
 
           {error ? (
-            <div className="border-t border-[#eadfd4] bg-[#fff6f1] px-4 py-2 text-xs leading-5 text-[#8a3f2e]">
+            <div className="border-t border-[#ececee] bg-[#fef2f2] px-4 py-2 text-xs leading-5 text-[#b91c1c]">
               {error}
             </div>
           ) : null}
 
           <form
             onSubmit={handleSubmit}
-            className="flex gap-2 border-t border-[#e7ded4] bg-[#fffaf4] p-3"
+            className="flex gap-2 border-t border-[#e6e6e8] bg-[#ffffff] p-3"
           >
             <label className="sr-only" htmlFor="assistant-message">
               {t.chat.messageLabel}
@@ -187,13 +187,13 @@ export function AiChatButton() {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={t.chat.inputPlaceholder}
-              className="min-w-0 flex-1 rounded-full border border-[#d8cfc4] bg-white px-4 py-2 text-sm text-[#241c21] outline-none transition placeholder:text-[#8a8188] focus:border-[#b691dd] focus:ring-3 focus:ring-[#b691dd]/25"
+              className="min-w-0 flex-1 rounded-lg border border-[#e6e6e8] bg-white px-4 py-2 text-sm text-[#1d1d1f] outline-none transition placeholder:text-[#9b9ba3] focus:border-[#a78bfa] focus:ring-3 focus:ring-[#a78bfa]/25"
             />
             <button
               type="submit"
               disabled={!input.trim() || isSending}
               aria-label={t.chat.sendLabel}
-              className="grid size-10 shrink-0 place-items-center rounded-full bg-[#3b2f43] text-white transition hover:bg-[#4d3f57] focus:outline-none focus:ring-4 focus:ring-[#b691dd]/35 disabled:cursor-not-allowed disabled:bg-[#b9adb6]"
+              className="grid size-10 shrink-0 place-items-center rounded-full bg-[#18181b] text-white transition hover:bg-[#27272d] focus:outline-none focus:ring-4 focus:ring-[#a78bfa]/35 disabled:cursor-not-allowed disabled:bg-[#c4c4cc]"
             >
               <svg
                 aria-hidden="true"
@@ -218,7 +218,7 @@ export function AiChatButton() {
         aria-expanded={isOpen}
         aria-label={isOpen ? t.chat.closeLabel : t.chat.openLabel}
         onClick={() => setIsOpen((current) => !current)}
-        className="group grid size-14 place-items-center rounded-full border border-[#d7c7e8] bg-[#fbf8f4] text-[#3b2f43] shadow-[0_18px_42px_rgba(30,24,28,0.22)] transition hover:-translate-y-0.5 hover:border-[#b691dd] hover:bg-[#f2eaf9] focus:outline-none focus:ring-4 focus:ring-[#b691dd]/35"
+        className="group grid size-14 place-items-center rounded-full border border-[#e7e0fb] bg-[#f5f5f7] text-[#18181b] shadow-[0_18px_42px_rgba(30,24,28,0.22)] transition hover:-translate-y-0.5 hover:border-[#a78bfa] hover:bg-[#f3f0fe] focus:outline-none focus:ring-4 focus:ring-[#a78bfa]/35"
       >
         <svg
           aria-hidden="true"

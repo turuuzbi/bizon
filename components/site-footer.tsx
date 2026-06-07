@@ -10,19 +10,19 @@ export async function SiteFooter() {
   const t = getDictionary(locale);
 
   return (
-    <footer className="mt-12 bg-[#1f1828] text-white">
+    <footer className="mt-12 bg-[#1d1d1f] text-white">
       <div className="mx-auto w-full max-w-340 px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div className="space-y-5">
             <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-white/10 p-2.5 backdrop-blur">
+              <div className="rounded-lg bg-white/10 p-2.5 backdrop-blur">
                 <BrandLogo size="sm" className="h-10 w-auto" />
               </div>
               <div className="leading-tight">
                 <p className="font-[family:var(--font-display)] text-xl font-semibold tracking-[-0.03em]">
                   {t.footer.aboutTitle}
                 </p>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#c8b7e2]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#c4b5fd]">
                   Erka&apos;s
                 </p>
               </div>
@@ -49,7 +49,7 @@ export async function SiteFooter() {
                   key={social.label}
                   href="#"
                   aria-label={social.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-[#c8b7e2] hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition-colors hover:border-[#c4b5fd] hover:text-white"
                 >
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
                     <path d={social.path} />
@@ -60,7 +60,7 @@ export async function SiteFooter() {
           </div>
 
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8b7e2]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c4b5fd]">
               {t.footer.companyTitle}
             </p>
             <ul className="mt-4 space-y-3 text-sm text-white/70">
@@ -88,7 +88,7 @@ export async function SiteFooter() {
           </div>
 
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8b7e2]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c4b5fd]">
               {t.footer.helpTitle}
             </p>
             <ul className="mt-4 space-y-3 text-sm text-white/70">
@@ -117,7 +117,7 @@ export async function SiteFooter() {
 
           <div className="space-y-6">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8b7e2]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c4b5fd]">
                 {t.footer.contactTitle}
               </p>
               <div className="mt-4 space-y-2 text-sm text-white/70">
@@ -138,7 +138,7 @@ export async function SiteFooter() {
               </div>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c8b7e2]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c4b5fd]">
                 {t.footer.hoursTitle}
               </p>
               <div className="mt-4 space-y-1.5 text-sm text-white/70">

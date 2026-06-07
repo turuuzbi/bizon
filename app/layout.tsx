@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Fraunces, Geist_Mono, Manrope } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 
 import { AiChatButton } from "@/components/ai-chat-button";
 import { LocaleProvider } from "@/components/locale-provider";
@@ -8,13 +8,9 @@ import { getLocale } from "@/lib/i18n-server";
 
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// One clean, neutral sans for headings and body — SF-Pro-like, the Apple way.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -38,7 +34,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${manrope.variable} ${fraunces.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <LocaleProvider locale={locale}>

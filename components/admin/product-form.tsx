@@ -1,4 +1,4 @@
-import { ProductStatus, UnitType } from "@prisma/client";
+import { Prisma, ProductStatus, UnitType } from "@prisma/client";
 
 import {
   PRODUCT_STATUS_OPTIONS,
@@ -42,6 +42,11 @@ type ProductFormProps = {
       altText: string | null;
       isPrimary: boolean;
       position: number;
+    }[];
+    variants?: {
+      price: Prisma.Decimal;
+      inventoryQuantity: number;
+      trackInventory: boolean;
     }[];
   } | null;
   options: {
@@ -101,6 +106,12 @@ export async function ProductForm({
   const selectedCategoryIds = new Set(
     product?.productCategories.map((item) => item.categoryId) ?? [],
   );
+  const defaultVariant = product?.variants?.[0] ?? null;
+  const priceValue = defaultVariant ? Number(defaultVariant.price) : "";
+  const stockValue =
+    defaultVariant && defaultVariant.trackInventory
+      ? defaultVariant.inventoryQuantity
+      : "";
 
   return (
     <div className="flex flex-col gap-6">
@@ -228,6 +239,51 @@ export async function ProductForm({
               className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm leading-7 text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
             />
           </label>
+        </section>
+
+        <section className="rounded-[36px] border border-black/10 bg-[#fffcf8] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#536458]">
+            {tForm.pricingEyebrow}
+          </p>
+          <div className="mt-4 grid gap-6 lg:grid-cols-2">
+            <label className="block">
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                {tForm.price}
+              </span>
+              <input
+                name="price"
+                type="number"
+                min="0"
+                step="0.01"
+                inputMode="decimal"
+                defaultValue={priceValue}
+                placeholder="0"
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
+              />
+              <span className="mt-2 block text-xs leading-5 text-[#625f5a]">
+                {tForm.priceHint}
+              </span>
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-[#1d1a17]">
+                {tForm.stockQuantity}
+              </span>
+              <input
+                name="stockQuantity"
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                defaultValue={stockValue}
+                placeholder={tForm.stockPlaceholder}
+                className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1a17] outline-none transition-colors focus:border-[#8e55cf]"
+              />
+              <span className="mt-2 block text-xs leading-5 text-[#625f5a]">
+                {tForm.stockHint}
+              </span>
+            </label>
+          </div>
         </section>
 
         <section className="rounded-[36px] border border-black/10 bg-[#fffaf5] p-8 shadow-[0_24px_60px_rgba(34,28,20,0.06)] sm:p-10">

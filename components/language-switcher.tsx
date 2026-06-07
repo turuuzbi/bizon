@@ -25,24 +25,24 @@ export function LanguageSwitcher({
 
   const base =
     variant === "utility"
-      ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 p-0.5 text-[11px] font-semibold uppercase tracking-[0.18em]"
-      : "inline-flex items-center rounded-full border border-black/10 bg-white p-0.5 text-[11px] font-semibold uppercase tracking-[0.18em]";
+      ? "inline-flex items-center rounded-full border border-white/15 bg-white/5 p-0.5 text-[11px] font-semibold uppercase tracking-[0.1em]"
+      : "inline-flex items-center rounded-full border border-black/10 bg-white p-0.5 text-[11px] font-semibold uppercase tracking-[0.1em]";
 
   const activeClass =
     variant === "utility"
-      ? "bg-white text-[#8e55cf]"
-      : "bg-[#8e55cf] text-white";
+      ? "bg-white text-[#7c3aed]"
+      : "bg-[#7c3aed] text-white";
   const idleClass =
     variant === "utility"
       ? "text-white/80 hover:text-white"
-      : "text-[#4f4854] hover:text-[#8e55cf]";
+      : "text-[#44444c] hover:text-[#7c3aed]";
 
   return (
     <div className={base} aria-label="Language switcher">
       <button
         type="button"
         onClick={() => switchTo("mn")}
-        className={`rounded-full px-3 py-1 transition-colors ${
+        className={`rounded-lg px-3 py-1 transition-colors ${
           current === "mn" ? activeClass : idleClass
         }`}
         disabled={isPending}
@@ -52,7 +52,7 @@ export function LanguageSwitcher({
       <button
         type="button"
         onClick={() => switchTo("en")}
-        className={`rounded-full px-3 py-1 transition-colors ${
+        className={`rounded-lg px-3 py-1 transition-colors ${
           current === "en" ? activeClass : idleClass
         }`}
         disabled={isPending}

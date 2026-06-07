@@ -15,7 +15,6 @@ type ProductsPageProps = {
 
 type ProductsFilterState = {
   q: string;
-  status: string;
   category: string;
   sort: string;
 };
@@ -51,16 +50,6 @@ function summarizeText(product: ProductCard, fallback: string) {
     product.shortDescription?.trim() || product.description?.trim() || "";
   if (!source) return fallback;
   return source.length > 120 ? `${source.slice(0, 117).trim()}...` : source;
-}
-
-function getStatusClass(status: ProductStatus) {
-  if (status === ProductStatus.ACTIVE) {
-    return "bg-[#e9f3e8] text-[#36533c]";
-  }
-  if (status === ProductStatus.ARCHIVED) {
-    return "bg-[#ece6df] text-[#5f5952]";
-  }
-  return "bg-[#f6ece0] text-[#7c5c3d]";
 }
 
 function buildProductsHref(
@@ -161,22 +150,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const resolvedSearchParams = await searchParams;
   const filters: ProductsFilterState = {
     q: getSingleSearchParam(resolvedSearchParams.q).trim(),
-    status: getSingleSearchParam(resolvedSearchParams.status).trim(),
     category: getSingleSearchParam(resolvedSearchParams.category).trim(),
     sort: getSingleSearchParam(resolvedSearchParams.sort).trim() || "featured",
   };
 
-  const selectedStatus = Object.values(ProductStatus).includes(
-    filters.status as ProductStatus,
-  )
-    ? (filters.status as ProductStatus)
-    : null;
   const selectedSort: SortValue = SORT_VALUES.includes(filters.sort as SortValue)
     ? (filters.sort as SortValue)
     : "featured";
 
-  const whereClauses: Prisma.ProductWhereInput[] = [];
-  if (selectedStatus) whereClauses.push({ status: selectedStatus });
+  // Public storefront: only published (ACTIVE) products are shown, so every
+  // card links to a detail page the PDP will actually serve.
+  const whereClauses: Prisma.ProductWhereInput[] = [
+    { status: ProductStatus.ACTIVE },
+  ];
 
   if (filters.category) {
     whereClauses.push({
@@ -225,13 +211,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     (category) => category.slug === filters.category,
   );
 
-  const statusFilters = [
-    { value: "", label: t.productsPage.allStatuses },
-    { value: ProductStatus.ACTIVE, label: t.productStatus.ACTIVE },
-    { value: ProductStatus.DRAFT, label: t.productStatus.DRAFT },
-    { value: ProductStatus.ARCHIVED, label: t.productStatus.ARCHIVED },
-  ];
-
   const sortOptions: Array<{ value: SortValue; label: string }> = [
     { value: "featured", label: t.productsPage.sortFeatured },
     { value: "newest", label: t.productsPage.sortNewest },
@@ -246,16 +225,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     <main className="min-h-screen bg-white">
       <PublicHeader current="products" />
       <div className="mx-auto flex w-full max-w-340 flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
-        <section className="rounded-[40px] border border-black/10 bg-[#fffaf5] px-6 py-8 shadow-[0_24px_60px_rgba(28,23,19,0.06)] sm:p-10">
+        <section className="rounded-xl border border-black/10 bg-[#ffffff] px-6 py-8 shadow-sm sm:p-10">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b9ba3]">
                 {t.productsPage.eyebrow}
               </p>
-              <h1 className="mt-4 font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.05em] text-[#211a1f] sm:text-5xl">
+              <h1 className="mt-4 font-[family:var(--font-display)] text-4xl leading-[0.98] tracking-[-0.05em] text-[#1d1d1f] sm:text-5xl">
                 {t.productsPage.title}
               </h1>
-              <p className="mt-4 text-base leading-8 text-[#62586a] sm:text-lg">
+              <p className="mt-4 text-base leading-8 text-[#6e6e73] sm:text-lg">
                 {t.productsPage.subtitle}
               </p>
             </div>
@@ -268,12 +247,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               ].map((item) => (
                 <article
                   key={item.label}
-                  className="rounded-[22px] border border-black/[0.08] bg-[#f6f0e8] px-5 py-4"
+                  className="rounded-lg border border-black/[0.08] bg-[#f5f5f7] px-5 py-4"
                 >
-                  <p className="text-sm font-medium text-[#655c69]">
+                  <p className="text-sm font-medium text-[#6e6e73]">
                     {item.label}
                   </p>
-                  <p className="mt-2 text-3xl font-semibold tracking-[-0.05em] text-[#211a1f]">
+                  <p className="mt-2 text-3xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">
                     {item.value}
                   </p>
                 </article>
@@ -282,17 +261,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           </div>
         </section>
 
-        <section className="rounded-[40px] border border-black/10 bg-[#fffdf9] px-6 py-8 shadow-[0_24px_60px_rgba(28,23,19,0.06)] sm:p-8">
+        <section className="rounded-xl border border-black/10 bg-[#ffffff] px-6 py-8 shadow-sm sm:p-8">
           <div className="flex flex-col gap-6">
             {categories.length > 0 ? (
               <div className="overflow-x-auto">
                 <div className="flex min-w-max gap-3">
                   <Link
                     href={buildProductsHref(filters, { category: "" })}
-                    className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+                    className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                       filters.category
-                        ? "border border-black/10 bg-white text-[#2d2731] hover:border-[#8e55cf] hover:text-[#8e55cf]"
-                        : "bg-[#8e55cf] text-white"
+                        ? "border border-black/10 bg-white text-[#1d1d1f] hover:border-[#7c3aed] hover:text-[#7c3aed]"
+                        : "bg-[#7c3aed] text-white"
                     }`}
                   >
                     {t.productsPage.allProducts}
@@ -306,10 +285,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         href={buildProductsHref(filters, {
                           category: category.slug,
                         })}
-                        className={`rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+                        className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                           active
-                            ? "bg-[#8e55cf] text-white"
-                            : "border border-black/10 bg-white text-[#2d2731] hover:border-[#8e55cf] hover:text-[#8e55cf]"
+                            ? "bg-[#7c3aed] text-white"
+                            : "border border-black/10 bg-white text-[#1d1d1f] hover:border-[#7c3aed] hover:text-[#7c3aed]"
                         }`}
                       >
                         {category.name}
@@ -320,11 +299,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             ) : null}
 
-            <form className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_180px_180px_auto]">
+            <form className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_180px_auto]">
               <input type="hidden" name="category" value={filters.category} />
 
               <label className="block">
-                <span className="text-sm font-semibold text-[#211a1f]">
+                <span className="text-sm font-semibold text-[#1d1d1f]">
                   {t.productsPage.searchLabel}
                 </span>
                 <input
@@ -332,35 +311,18 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   name="q"
                   defaultValue={filters.q}
                   placeholder={t.productsPage.searchPlaceholder}
-                  className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#211a1f] outline-none transition-colors focus:border-[#8e55cf]"
+                  className="mt-2 w-full rounded-lg border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1d1f] outline-none transition-colors focus:border-[#7c3aed]"
                 />
               </label>
 
               <label className="block">
-                <span className="text-sm font-semibold text-[#211a1f]">
-                  {t.productsPage.statusLabel}
-                </span>
-                <select
-                  name="status"
-                  defaultValue={filters.status}
-                  className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#211a1f] outline-none transition-colors focus:border-[#8e55cf]"
-                >
-                  {statusFilters.map((option) => (
-                    <option key={option.label} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="block">
-                <span className="text-sm font-semibold text-[#211a1f]">
+                <span className="text-sm font-semibold text-[#1d1d1f]">
                   {t.productsPage.sortLabel}
                 </span>
                 <select
                   name="sort"
                   defaultValue={selectedSort}
-                  className="mt-2 w-full rounded-[18px] border border-black/10 bg-white px-4 py-3 text-sm text-[#211a1f] outline-none transition-colors focus:border-[#8e55cf]"
+                  className="mt-2 w-full rounded-lg border border-black/10 bg-white px-4 py-3 text-sm text-[#1d1d1f] outline-none transition-colors focus:border-[#7c3aed]"
                 >
                   {sortOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -373,13 +335,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <div className="flex items-end gap-3">
                 <button
                   type="submit"
-                  className="rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
+                  className="rounded-lg bg-[#7c3aed] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
                 >
                   {t.productsPage.apply}
                 </button>
                 <Link
                   href="/products"
-                  className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2731] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
+                  className="rounded-lg border border-black/10 px-6 py-3.5 text-sm font-medium text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
                 >
                   {t.productsPage.reset}
                 </Link>
@@ -390,10 +352,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         <section className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b9ba3]">
               {t.productsPage.currentView}
             </p>
-            <p className="mt-2 text-sm leading-7 text-[#62586a]">
+            <p className="mt-2 text-sm leading-7 text-[#6e6e73]">
               {selectedCategory
                 ? formatString(t.productsPage.showingInCategory, {
                     name: selectedCategory.name,
@@ -401,7 +363,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 : t.productsPage.showingFullCatalog}
             </p>
           </div>
-          <p className="text-sm text-[#62586a]">
+          <p className="text-sm text-[#6e6e73]">
             {filters.q
               ? `${t.productsPage.searchPrefix} "${filters.q}"`
               : t.productsPage.narrowHint}
@@ -418,15 +380,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               return (
                 <article
                   key={product.id}
-                  className="rounded-[30px] border border-black/10 bg-[#fffaf6] p-4 shadow-[0_18px_48px_rgba(28,23,19,0.05)] transition-transform duration-200 hover:-translate-y-1"
+                  className="rounded-lg border border-black/10 bg-[#ffffff] p-4 shadow-sm transition-transform duration-200 hover:-translate-y-1"
                 >
-                  <div className="relative overflow-hidden rounded-[24px] border border-black/6 bg-[#f5efe8]">
-                    <div className="relative aspect-[4/5]">
+                  <div className="relative overflow-hidden rounded-lg border border-black/6 bg-[#f5f5f7]">
+                    <Link
+                      href={`/products/${product.slug}`}
+                      aria-label={product.name}
+                      className="relative block aspect-[4/5]"
+                    >
                       {image ? (
                         <div
                           role="img"
                           aria-label={imageAlt}
-                          className="absolute inset-5 rounded-[18px] bg-no-repeat"
+                          className="absolute inset-5 rounded-lg bg-no-repeat"
                           style={{
                             backgroundImage: `url("${image.url}")`,
                             backgroundPosition: "center",
@@ -435,44 +401,41 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-white text-2xl font-semibold uppercase tracking-[0.16em] text-[#8e55cf]">
+                          <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-2xl font-semibold uppercase tracking-[0.1em] text-[#7c3aed]">
                             {getInitials(product.name)}
                           </div>
                         </div>
                       )}
-                    </div>
+                    </Link>
 
-                    <div className="absolute left-3 top-3 flex flex-wrap gap-2">
-                      <span
-                        className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${getStatusClass(
-                          product.status,
-                        )}`}
-                      >
-                        {t.productStatus[product.status]}
-                      </span>
-
-                      {product.isNewArrival ? (
-                        <span className="rounded-full bg-[#efe4fb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6d36ad]">
+                    {product.isNewArrival ? (
+                      <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+                        <span className="rounded-lg bg-[#f3f0fe] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6d28d9]">
                           {t.productsPage.badgeNew}
                         </span>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
 
                   <div className="mt-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8c7f9a]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b9ba3]">
                       {product.brand?.name ?? t.productsPage.catalogTagline}
                     </p>
                     <div className="mt-2 flex items-start justify-between gap-4">
-                      <h3 className="text-xl font-semibold tracking-[-0.04em] text-[#211a1f]">
-                        {product.name}
+                      <h3 className="text-xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">
+                        <Link
+                          href={`/products/${product.slug}`}
+                          className="transition-colors hover:text-[#7c3aed]"
+                        >
+                          {product.name}
+                        </Link>
                       </h3>
-                      <span className="rounded-full bg-[#f3ebfb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6d36ad]">
+                      <span className="rounded-lg bg-[#f3f0fe] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#6d28d9]">
                         {unitLabel(product.baseUnit)}
                       </span>
                     </div>
 
-                    <p className="mt-3 text-sm leading-7 text-[#5f5664]">
+                    <p className="mt-3 text-sm leading-7 text-[#6e6e73]">
                       {summarizeText(product, t.productsPage.cardFallback)}
                     </p>
 
@@ -484,19 +447,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                             href={buildProductsHref(filters, {
                               category: category.slug,
                             })}
-                            className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#403946] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
+                            className="rounded-lg border border-black/10 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#44444c] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
                           >
                             {category.name}
                           </Link>
                         ))
                       ) : (
-                        <span className="rounded-full border border-dashed border-black/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#7b727f]">
+                        <span className="rounded-lg border border-dashed border-black/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9b9ba3]">
                           {t.products.noCategory}
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-5 flex items-center justify-between border-t border-black/8 pt-4 text-xs font-medium text-[#6b636a]">
+                    <div className="mt-5 flex items-center justify-between border-t border-black/8 pt-4 text-xs font-medium text-[#6e6e73]">
                       <span>{product.sku ?? t.productsPage.skuPending}</span>
                       <span>
                         {formatDate(
@@ -511,14 +474,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             })
           ) : (
             <section className="sm:col-span-2 lg:col-span-3 xl:col-span-4">
-              <div className="rounded-[36px] border border-dashed border-black/10 bg-[#fffaf5] p-10 text-center shadow-[0_24px_60px_rgba(28,23,19,0.05)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7f7391]">
+              <div className="rounded-xl border border-dashed border-black/10 bg-[#ffffff] p-10 text-center shadow-sm">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b9ba3]">
                   {t.productsPage.noResults}
                 </p>
-                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#211a1f]">
+                <h2 className="mt-4 text-3xl font-semibold tracking-[-0.05em] text-[#1d1d1f]">
                   {t.productsPage.noProductsMatch}
                 </h2>
-                <p className="mt-4 text-base leading-7 text-[#62586a]">
+                <p className="mt-4 text-base leading-7 text-[#6e6e73]">
                   {selectedCategory
                     ? formatString(t.productsPage.noMatchInCategory, {
                         name: selectedCategory.name,
@@ -528,13 +491,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   <Link
                     href="/products"
-                    className="rounded-full bg-[#8e55cf] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
+                    className="rounded-lg bg-[#7c3aed] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
                   >
                     {t.productsPage.resetFilters}
                   </Link>
                   <Link
                     href="/admin/products/new"
-                    className="rounded-full border border-black/10 px-6 py-3.5 text-sm font-medium text-[#2d2731] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
+                    className="rounded-lg border border-black/10 px-6 py-3.5 text-sm font-medium text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
                   >
                     {t.products.addProduct}
                   </Link>

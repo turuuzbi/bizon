@@ -3,6 +3,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { SiteAuthActions } from "@/components/site-auth-actions";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { getCartCount } from "@/lib/cart";
 import { getDictionary } from "@/lib/i18n";
 import { getLocale } from "@/lib/i18n-server";
 import { prisma } from "@/lib/prisma";
@@ -34,7 +35,10 @@ async function loadNavCategories() {
 export async function PublicHeader({ current }: PublicHeaderProps) {
   const locale = await getLocale();
   const t = getDictionary(locale);
-  const categories = await loadNavCategories();
+  const [categories, cartCount] = await Promise.all([
+    loadNavCategories(),
+    getCartCount(),
+  ]);
 
   const fallbackNav: Array<{ id: string; name: string; slug: string }> = [
     { id: "new", name: t.nav.newArrivals, slug: "new-arrivals" },
@@ -52,7 +56,7 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
   return (
     <header className="border-b border-black/8 bg-white">
       {/* Utility bar */}
-      <div className="bg-[#1f1828] text-white">
+      <div className="bg-[#1d1d1f] text-white">
         <div className="mx-auto flex w-full max-w-340 flex-wrap items-center justify-between gap-3 px-4 py-2 text-[11px] sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-white/70">
             <span className="hidden items-center gap-1.5 sm:inline-flex">
@@ -143,10 +147,10 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
               className="h-12 w-auto sm:h-14"
             />
             <span className="hidden flex-col leading-tight sm:flex">
-              <span className="font-[family:var(--font-display)] text-xl font-semibold tracking-[-0.03em] text-[#1f1828]">
+              <span className="font-[family:var(--font-display)] text-xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">
                 Erka&apos;s
               </span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8e55cf]">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7c3aed]">
                 Building Materials
               </span>
             </span>
@@ -156,7 +160,7 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
             <Link
               href="/products"
               aria-label={t.header.favorites}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 text-[#1f1828] hover:border-[#8e55cf] hover:text-[#8e55cf]"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 text-[#1d1d1f] hover:border-[#7c3aed] hover:text-[#7c3aed]"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -171,9 +175,9 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
               </svg>
             </Link>
             <Link
-              href="/products"
+              href="/cart"
               aria-label={t.header.cart}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#8e55cf] text-white hover:bg-[#7d45c1]"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#7c3aed] text-white hover:bg-[#6d28d9]"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -188,6 +192,11 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
                 <circle cx="20" cy="21" r="1" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
+              {cartCount > 0 ? (
+                <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-lg bg-[#1d1d1f] px-1 text-[10px] font-semibold text-white">
+                  {cartCount}
+                </span>
+              ) : null}
             </Link>
           </div>
         </div>
@@ -195,7 +204,7 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
         <form
           action="/products"
           method="GET"
-          className="flex w-full items-center overflow-hidden rounded-full border border-black/10 bg-[#f6f1eb] focus-within:border-[#8e55cf] focus-within:bg-white lg:flex-1"
+          className="flex w-full items-center overflow-hidden rounded-full border border-black/10 bg-[#f5f5f7] focus-within:border-[#7c3aed] focus-within:bg-white lg:flex-1"
         >
           <svg
             viewBox="0 0 24 24"
@@ -204,7 +213,7 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="ml-4 h-4 w-4 text-[#7b7088]"
+            className="ml-4 h-4 w-4 text-[#9b9ba3]"
           >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
@@ -213,11 +222,11 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
             type="search"
             name="q"
             placeholder={t.header.searchPlaceholder}
-            className="flex-1 bg-transparent px-3 py-3 text-sm text-[#1f1828] placeholder:text-[#7b7088] focus:outline-none"
+            className="flex-1 bg-transparent px-3 py-3 text-sm text-[#1d1d1f] placeholder:text-[#9b9ba3] focus:outline-none"
           />
           <button
             type="submit"
-            className="my-1 mr-1 rounded-full bg-[#8e55cf] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#7d45c1]"
+            className="my-1 mr-1 rounded-lg bg-[#7c3aed] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#6d28d9]"
           >
             {t.header.searchButton}
           </button>
@@ -227,7 +236,7 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
           <Link
             href="/products"
             aria-label={t.header.favorites}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-[#1f1828] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
           >
             <svg
               viewBox="0 0 24 24"
@@ -242,8 +251,8 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
             </svg>
           </Link>
           <Link
-            href="/products"
-            className="flex items-center gap-2 rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
+            href="/cart"
+            className="flex items-center gap-2 rounded-lg bg-[#7c3aed] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
           >
             <svg
               viewBox="0 0 24 24"
@@ -259,17 +268,22 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
             </svg>
             {t.header.cart}
+            {cartCount > 0 ? (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-lg bg-white px-1 text-[10px] font-semibold text-[#7c3aed]">
+                {cartCount}
+              </span>
+            ) : null}
           </Link>
           <SiteAuthActions />
         </div>
       </div>
 
       {/* Mega-nav category bar */}
-      <nav className="border-t border-black/8 bg-[#fbf8f4]">
+      <nav className="border-t border-black/8 bg-[#f5f5f7]">
         <div className="mx-auto flex w-full max-w-340 items-center gap-1 overflow-x-auto px-4 py-2 text-sm sm:px-6 lg:px-8">
           <Link
             href="/products"
-            className="flex shrink-0 items-center gap-2 rounded-full bg-[#8e55cf] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#7d45c1]"
+            className="flex shrink-0 items-center gap-2 rounded-lg bg-[#7c3aed] px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-white transition-colors hover:bg-[#6d28d9]"
           >
             <svg
               viewBox="0 0 24 24"
@@ -290,7 +304,7 @@ export async function PublicHeader({ current }: PublicHeaderProps) {
             <Link
               key={item.id}
               href={`/products?category=${item.slug}`}
-              className="shrink-0 rounded-full px-3.5 py-2 text-sm text-[#3a323f] transition-colors hover:bg-white hover:text-[#8e55cf]"
+              className="shrink-0 rounded-lg px-3.5 py-2 text-sm text-[#44444c] transition-colors hover:bg-white hover:text-[#7c3aed]"
             >
               {item.name}
             </Link>

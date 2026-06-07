@@ -65,13 +65,13 @@ export function SiteAuthActions() {
       <div className="flex flex-wrap items-center gap-3">
         <Link
           href="/sign-in"
-          className="rounded-full border border-black/10 px-4 py-2.5 text-sm font-medium text-[#312836] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
+          className="rounded-lg border border-black/10 px-4 py-2.5 text-sm font-medium text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
         >
           {t.header.signIn}
         </Link>
         <Link
           href="/sign-up"
-          className="rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
+          className="rounded-lg bg-[#7c3aed] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
         >
           {t.header.createAccount}
         </Link>
@@ -81,16 +81,22 @@ export function SiteAuthActions() {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
+      <Link
+        href="/orders"
+        className="rounded-lg border border-black/10 px-4 py-2.5 text-sm font-medium text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
+      >
+        {t.orders.title}
+      </Link>
       {viewer?.role === "ADMIN" ? (
         <Link
           href="/admin"
           prefetch={false}
-          className="rounded-full bg-[#8e55cf] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
+          className="rounded-lg bg-[#7c3aed] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
         >
           {t.header.adminPanel}
         </Link>
       ) : null}
-      <div className="flex h-10 items-center rounded-full border border-black/10 bg-white px-1.5">
+      <div className="flex h-10 items-center rounded-lg border border-black/10 bg-white px-1.5">
         <UserButton
           appearance={{
             elements: {
