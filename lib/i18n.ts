@@ -217,6 +217,114 @@ type Dictionary = {
     ACTIVE: string;
     ARCHIVED: string;
   };
+  breadcrumbs: {
+    home: string;
+    catalog: string;
+  };
+  marketplace: {
+    allCategories: string;
+    departments: string;
+    viewAllIn: string;
+    itemsCount: string;
+    filters: {
+      title: string;
+      searchWithin: string;
+      searchWithinPlaceholder: string;
+      categories: string;
+      brands: string;
+      availability: string;
+      inStock: string;
+      outOfStock: string;
+      promotions: string;
+      featured: string;
+      newArrivals: string;
+      clearAll: string;
+      showMore: string;
+      showLess: string;
+      noBrands: string;
+      activeFilters: string;
+    };
+    card: {
+      quickView: string;
+      addToCart: string;
+      added: string;
+      addToWishlist: string;
+      removeFromWishlist: string;
+      compare: string;
+      removeFromCompare: string;
+      inStock: string;
+      outOfStock: string;
+      newBadge: string;
+      featuredBadge: string;
+    };
+    quickView: {
+      title: string;
+      viewFullDetails: string;
+      close: string;
+    };
+    compare: {
+      pageTitle: string;
+      bar: string;
+      open: string;
+      clear: string;
+      empty: string;
+      limitReached: string;
+      remove: string;
+      colBrand: string;
+      colCategory: string;
+      colUnit: string;
+      colAvailability: string;
+      colSku: string;
+      backToCatalog: string;
+    };
+    wishlist: {
+      pageTitle: string;
+      empty: string;
+      emptyHint: string;
+      remove: string;
+      browseCatalog: string;
+    };
+    cart: {
+      pageTitle: string;
+      empty: string;
+      emptyHint: string;
+      remove: string;
+      qty: string;
+      checkout: string;
+      checkoutSoon: string;
+      browseCatalog: string;
+    };
+    recentlyViewed: {
+      title: string;
+      clear: string;
+    };
+    bestSellers: {
+      title: string;
+    };
+    productDetail: {
+      descriptionTitle: string;
+      specsTitle: string;
+      relatedTitle: string;
+      brand: string;
+      category: string;
+      unit: string;
+      availability: string;
+      noSpecs: string;
+      noDescription: string;
+    };
+    delivery: {
+      title: string;
+      cityDelivery: string;
+      cityDeliveryEta: string;
+      freeOver: string;
+      pickup: string;
+      pickupEta: string;
+      outOfCity: string;
+      outOfCityNote: string;
+      scheduledNote: string;
+      bulkNote: string;
+    };
+  };
   unit: Record<string, string>;
   orderStatus: Record<string, string>;
   admin: {
@@ -747,6 +855,116 @@ const dictionaries: Record<Locale, Dictionary> = {
       DRAFT: "Ноорог",
       ACTIVE: "Идэвхтэй",
       ARCHIVED: "Архив",
+    },
+    breadcrumbs: {
+      home: "Нүүр",
+      catalog: "Бараа",
+    },
+    marketplace: {
+      allCategories: "Бүх ангилал",
+      departments: "Ангиллууд",
+      viewAllIn: "{name}-г бүгдийг үзэх",
+      itemsCount: "{count} бараа",
+      filters: {
+        title: "Шүүлтүүр",
+        searchWithin: "Үр дүнгээс хайх",
+        searchWithinPlaceholder: "Үр дүнгээс нарийсгах...",
+        categories: "Ангилал",
+        brands: "Брэнд",
+        availability: "Бэлэн байдал",
+        inStock: "Нөөцтэй",
+        outOfStock: "Дууссан",
+        promotions: "Онцлох",
+        featured: "Онцлох бараа",
+        newArrivals: "Шинэ бараа",
+        clearAll: "Бүгдийг цэвэрлэх",
+        showMore: "Илүүг харах",
+        showLess: "Хураах",
+        noBrands: "Брэнд алга",
+        activeFilters: "Сонгосон шүүлтүүр",
+      },
+      card: {
+        quickView: "Шуурхай үзэх",
+        addToCart: "Сагсанд нэмэх",
+        added: "Нэмэгдсэн",
+        addToWishlist: "Хадгалах",
+        removeFromWishlist: "Хадгалснаас хасах",
+        compare: "Харьцуулах",
+        removeFromCompare: "Харьцуулгаас хасах",
+        inStock: "Нөөцтэй",
+        outOfStock: "Дууссан",
+        newBadge: "Шинэ",
+        featuredBadge: "Онцлох",
+      },
+      quickView: {
+        title: "Шуурхай харах",
+        viewFullDetails: "Дэлгэрэнгүй үзэх",
+        close: "Хаах",
+      },
+      compare: {
+        pageTitle: "Бараа харьцуулах",
+        bar: "Харьцуулах ({count})",
+        open: "Харьцуулга нээх",
+        clear: "Бүгдийг хасах",
+        empty: "Харьцуулах бараа алга байна.",
+        limitReached: "Дээд тал нь {max} бараа харьцуулж болно.",
+        remove: "Хасах",
+        colBrand: "Брэнд",
+        colCategory: "Ангилал",
+        colUnit: "Нэгж",
+        colAvailability: "Бэлэн байдал",
+        colSku: "Код",
+        backToCatalog: "Каталог руу буцах",
+      },
+      wishlist: {
+        pageTitle: "Хадгалсан бараа",
+        empty: "Хадгалсан бараа алга байна.",
+        emptyHint: "Дурын бараан дээрх зүрх дүрс дээр дарж хадгална уу.",
+        remove: "Хасах",
+        browseCatalog: "Каталог үзэх",
+      },
+      cart: {
+        pageTitle: "Сагс",
+        empty: "Сагс хоосон байна.",
+        emptyHint: "Каталогоос бараа сагсанд нэмнэ үү.",
+        remove: "Хасах",
+        qty: "Тоо",
+        checkout: "Захиалга баталгаажуулах",
+        checkoutSoon: "Тун удахгүй боломжтой болно",
+        browseCatalog: "Каталог үзэх",
+      },
+      recentlyViewed: {
+        title: "Сүүлд үзсэн бараа",
+        clear: "Цэвэрлэх",
+      },
+      bestSellers: {
+        title: "Хамгийн их зарагдсан",
+      },
+      productDetail: {
+        descriptionTitle: "Тайлбар",
+        specsTitle: "Үзүүлэлт",
+        relatedTitle: "Төрөлх бараа",
+        brand: "Брэнд",
+        category: "Ангилал",
+        unit: "Нэгж",
+        availability: "Бэлэн байдал",
+        noSpecs: "Үзүүлэлт нэмэгдээгүй байна.",
+        noDescription: "Тайлбар нэмэгдээгүй байна.",
+      },
+      delivery: {
+        title: "Хүргэлт ба очиж авах",
+        cityDelivery: "Хотын хүргэлт",
+        cityDeliveryEta: "Улаанбаатар хотод 24 цагийн дотор",
+        freeOver: "₮150,000-аас дээш захиалгад үнэгүй",
+        pickup: "Салбараас авах",
+        pickupEta: "2 цагийн дотор бэлэн · Нарантуул салбар",
+        outOfCity: "Хот орчмын болон орон нутаг",
+        outOfCityNote:
+          "Дүүрэг, зайнаас хамаарсан төлбөр. Овор ихтэй бараа тусдаа тооцогдоно.",
+        scheduledNote: "Төлбөр тооцоо хийхдээ хүргэлтийн өдөр, цагаа сонгоно.",
+        bulkNote:
+          "Бөөний болон хүнд бараа: хүргэлтийн цагийг бид баталгаажуулна.",
+      },
     },
     unit: {
       PIECE: "Ширхэг",
@@ -1333,6 +1551,115 @@ const dictionaries: Record<Locale, Dictionary> = {
       DRAFT: "Draft",
       ACTIVE: "Active",
       ARCHIVED: "Archived",
+    },
+    breadcrumbs: {
+      home: "Home",
+      catalog: "Products",
+    },
+    marketplace: {
+      allCategories: "All Categories",
+      departments: "Departments",
+      viewAllIn: "View all in {name}",
+      itemsCount: "{count} products",
+      filters: {
+        title: "Filters",
+        searchWithin: "Search within results",
+        searchWithinPlaceholder: "Narrow these results...",
+        categories: "Category",
+        brands: "Brand",
+        availability: "Availability",
+        inStock: "In stock",
+        outOfStock: "Out of stock",
+        promotions: "Promotions",
+        featured: "Featured",
+        newArrivals: "New arrivals",
+        clearAll: "Clear all",
+        showMore: "Show more",
+        showLess: "Show less",
+        noBrands: "No brands yet",
+        activeFilters: "Active filters",
+      },
+      card: {
+        quickView: "Quick view",
+        addToCart: "Add to cart",
+        added: "Added",
+        addToWishlist: "Save to wishlist",
+        removeFromWishlist: "Remove from wishlist",
+        compare: "Compare",
+        removeFromCompare: "Remove from compare",
+        inStock: "In stock",
+        outOfStock: "Out of stock",
+        newBadge: "New",
+        featuredBadge: "Featured",
+      },
+      quickView: {
+        title: "Quick view",
+        viewFullDetails: "View full details",
+        close: "Close",
+      },
+      compare: {
+        pageTitle: "Compare products",
+        bar: "Compare ({count})",
+        open: "Open comparison",
+        clear: "Clear all",
+        empty: "No products selected for comparison yet.",
+        limitReached: "You can compare up to {max} products at a time.",
+        remove: "Remove",
+        colBrand: "Brand",
+        colCategory: "Category",
+        colUnit: "Unit",
+        colAvailability: "Availability",
+        colSku: "SKU",
+        backToCatalog: "Back to catalog",
+      },
+      wishlist: {
+        pageTitle: "Saved items",
+        empty: "You haven't saved anything yet.",
+        emptyHint: "Tap the heart icon on any product to save it here.",
+        remove: "Remove",
+        browseCatalog: "Browse catalog",
+      },
+      cart: {
+        pageTitle: "Cart",
+        empty: "Your cart is empty.",
+        emptyHint: "Add products from the catalog to see them here.",
+        remove: "Remove",
+        qty: "Qty",
+        checkout: "Checkout",
+        checkoutSoon: "Coming soon",
+        browseCatalog: "Browse catalog",
+      },
+      recentlyViewed: {
+        title: "Recently viewed",
+        clear: "Clear",
+      },
+      bestSellers: {
+        title: "Best sellers",
+      },
+      productDetail: {
+        descriptionTitle: "Description",
+        specsTitle: "Specifications",
+        relatedTitle: "Related products",
+        brand: "Brand",
+        category: "Category",
+        unit: "Unit",
+        availability: "Availability",
+        noSpecs: "No specifications added yet.",
+        noDescription: "No description added yet.",
+      },
+      delivery: {
+        title: "Delivery & pickup",
+        cityDelivery: "Citywide delivery",
+        cityDeliveryEta: "Within 24 hours in Ulaanbaatar",
+        freeOver: "Free on orders over ₮150,000",
+        pickup: "Branch pickup",
+        pickupEta: "Ready in 2 hours · Naranttuul branch",
+        outOfCity: "Outside the city",
+        outOfCityNote:
+          "Zone-based fee by district and distance. Bulky items quoted separately.",
+        scheduledNote: "Choose a delivery date and time window at checkout.",
+        bulkNote: "Bulk & heavy orders: we confirm a delivery slot with you.",
+      },
     },
     unit: {
       PIECE: "Piece",

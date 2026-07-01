@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Geist_Mono, Inter } from "next/font/google";
 
 import { AiChatButton } from "@/components/ai-chat-button";
+import { CompareBar } from "@/components/marketplace/compare-bar";
 import { LocaleProvider } from "@/components/locale-provider";
 import { getLocale } from "@/lib/i18n-server";
 
@@ -40,6 +41,7 @@ export default async function RootLayout({
         <LocaleProvider locale={locale}>
           <ClerkProvider>
             {children}
+            <CompareBar />
             <AiChatButton />
           </ClerkProvider>
         </LocaleProvider>
