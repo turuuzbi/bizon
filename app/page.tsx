@@ -91,8 +91,6 @@ function toProductSummary(product: HomeProduct, unitLabel: (unit: string) => str
   };
 }
 
-<<<<<<< HEAD
-=======
 const productCardSelect = {
   id: true,
   name: true,
@@ -118,7 +116,6 @@ const productCardSelect = {
   },
 } satisfies Prisma.ProductSelect;
 
->>>>>>> c7d5ade (bizon)
 async function getHomeData() {
   try {
     const [productCount, categoryCount, brandCount, categories, products, bestSellers] =
@@ -255,24 +252,6 @@ export default async function HomePage() {
     <main className="min-h-screen bg-white">
       <PublicHeader current="home" />
 
-<<<<<<< HEAD
-      {/*
-        Consistent vertical rhythm: a single large gap (gap-20 / gap-28) between
-        major bands creates the "spacious, intentional" feel the brief asks for,
-        instead of the previous ad-hoc mt-10 / mt-14 spacing.
-      */}
-      <div className="mx-auto flex w-full max-w-340 flex-col gap-20 px-4 pb-20 pt-8 sm:gap-28 sm:px-6 sm:pt-10 lg:px-8">
-        {/* HERO — a single full-width carousel is the sole focus, hausplus-style. */}
-        <section>
-          <HeroCarousel
-            slides={t.hero.slides}
-            accentLabels={[t.nav.timber, t.nav.paint, t.nav.tools]}
-          />
-        </section>
-
-        {/* TRUST ROW — slim, borderless reassurance. No card chrome, no overlap. */}
-        <section className="grid grid-cols-2 gap-x-6 gap-y-8 border-y border-black/8 py-8 md:grid-cols-4">
-=======
       <div className="mx-auto w-full max-w-340 px-4 py-5 sm:px-6 lg:px-8">
         <HeroCarousel
           slides={t.hero.slides}
@@ -281,7 +260,6 @@ export default async function HomePage() {
 
         {/* Compact promo strip */}
         <section className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
->>>>>>> c7d5ade (bizon)
           {[
             {
               ...t.promoStrip.fastDelivery,
@@ -300,26 +278,6 @@ export default async function HomePage() {
               icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
             },
           ].map((tile) => (
-<<<<<<< HEAD
-            <div key={tile.title} className="flex items-center gap-3">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-6 w-6 shrink-0 text-[#7c3aed]"
-              >
-                <path d={tile.icon} />
-                {tile.extra}
-              </svg>
-              <div>
-                <p className="text-sm font-semibold text-[#1d1d1f]">
-                  {tile.title}
-                </p>
-                <p className="text-xs text-[#6e6e73]">{tile.copy}</p>
-=======
             <div
               key={tile.title}
               className="flex items-center gap-2.5 rounded-[10px] border border-[#e4e4e7] bg-white p-3"
@@ -340,32 +298,11 @@ export default async function HomePage() {
               <div>
                 <p className="text-xs font-semibold text-[#18181b]">{tile.title}</p>
                 <p className="text-[11px] text-[#71717a]">{tile.copy}</p>
->>>>>>> c7d5ade (bizon)
               </div>
             </div>
           ))}
         </section>
 
-<<<<<<< HEAD
-        {/* DEPARTMENTS */}
-        <section id="departments" className="scroll-mt-24">
-          <SectionIntro
-            eyebrow={t.categoryGrid.eyebrow}
-            title={t.categoryGrid.title}
-            subtitle={t.categoryGrid.subtitle}
-            action={
-              <Link
-                href="/products"
-                className="inline-flex w-fit items-center gap-2 rounded-lg border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
-              >
-                {t.categoryGrid.viewAll}
-                <ArrowIcon />
-              </Link>
-            }
-          />
-
-          <div className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-=======
         {/* Category grid */}
         <section id="departments" className="mt-8">
           <div className="flex items-end justify-between gap-3">
@@ -381,20 +318,13 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
->>>>>>> c7d5ade (bizon)
             {featuredDepartments.map((category) => (
               <Link
                 key={category.id}
                 href={`/products?category=${category.slug}`}
-<<<<<<< HEAD
-                className="group flex flex-col items-center gap-4 rounded-lg border border-black/8 bg-white p-6 text-center transition-all hover:-translate-y-1 hover:border-[#7c3aed] hover:shadow-md"
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-[#f5f5f7] text-[#7c3aed] transition-colors group-hover:bg-[#f3f0fe]">
-=======
                 className="group flex flex-col items-center gap-2 rounded-[10px] border border-[#e4e4e7] bg-white p-3 text-center transition-colors hover:border-[#8e55cf]"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#f6f6f7] text-[#8e55cf] transition-colors group-hover:bg-[#f3ebfb]">
->>>>>>> c7d5ade (bizon)
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -407,11 +337,7 @@ export default async function HomePage() {
                     <path d={categoryIcons[category.slug] ?? categoryIconFallback} />
                   </svg>
                 </div>
-<<<<<<< HEAD
-                <p className="text-sm font-semibold text-[#1d1d1f]">
-=======
                 <p className="line-clamp-2 text-[11px] font-medium leading-tight text-[#18181b]">
->>>>>>> c7d5ade (bizon)
                   {category.name}
                 </p>
               </Link>
@@ -419,187 +345,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-<<<<<<< HEAD
-        {/* FEATURED COLLECTION BAND */}
-        <section className="overflow-hidden rounded-xl bg-[#1d1d1f] text-white">
-          <div className="grid gap-10 p-8 sm:p-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c4b5fd]">
-                {t.featured.eyebrow}
-              </p>
-              <h2 className="mt-4 font-[family:var(--font-display)] text-3xl leading-[1.05] tracking-[-0.04em] sm:text-4xl lg:text-[2.75rem]">
-                {t.featured.title}
-              </h2>
-              <p className="mt-4 max-w-xl text-base leading-7 text-white/75">
-                {t.featured.copy}
-              </p>
-
-              <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-                {[t.featured.benefit1, t.featured.benefit2, t.featured.benefit3].map(
-                  (benefit) => (
-                    <li
-                      key={benefit}
-                      className="flex items-center gap-2 text-sm text-white/85"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-4 w-4 shrink-0 text-[#c4b5fd]"
-                      >
-                        <path d="M20 6 9 17l-5-5" />
-                      </svg>
-                      {benefit}
-                    </li>
-                  ),
-                )}
-              </ul>
-
-              <Link
-                href="/products"
-                className="mt-8 inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-semibold text-[#1d1d1f] transition-colors hover:bg-[#f3f0fe] hover:text-[#6d28d9]"
-              >
-                {t.featured.cta}
-                <ArrowIcon />
-              </Link>
-            </div>
-
-            <div className="relative grid grid-cols-2 gap-4">
-              {[
-                { label: locale === "mn" ? "Хувцасны өрөө" : "Wardrobe", h: "h-44" },
-                { label: locale === "mn" ? "Номын тавиур" : "Bookshelves", h: "h-32" },
-                { label: locale === "mn" ? "Гараж" : "Garage", h: "h-32" },
-                { label: locale === "mn" ? "Оффис" : "Office", h: "h-44" },
-              ].map((card) => (
-                <div
-                  key={card.label}
-                  className={`flex ${card.h} flex-col justify-end rounded-lg border border-white/15 bg-white/8 p-4 backdrop-blur transition-all hover:bg-white/15`}
-                >
-                  <span className="text-xs font-semibold uppercase tracking-[0.1em] text-white/70">
-                    Elfa
-                  </span>
-                  <span className="mt-1 text-base font-semibold">
-                    {card.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* PRODUCTS GRID */}
-        <section>
-          <SectionIntro
-            eyebrow={t.products.eyebrow}
-            title={t.products.title}
-            subtitle={t.products.subtitle}
-            action={
-              <Link
-                href="/products"
-                className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#7c3aed] hover:text-[#6d28d9]"
-              >
-                {t.products.viewAll}
-                <ArrowIcon />
-              </Link>
-            }
-          />
-
-          {data.products.length > 0 ? (
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {data.products.map((product) => {
-                const image = getProductImage(product);
-
-                return (
-                  <article
-                    key={product.id}
-                    className="group flex flex-col overflow-hidden rounded-lg border border-black/8 bg-white transition-all hover:-translate-y-1 hover:border-[#7c3aed]/40 hover:shadow-md"
-                  >
-                    <Link
-                      href={`/products/${product.slug}`}
-                      aria-label={product.name}
-                      className="relative block aspect-square overflow-hidden bg-[#f5f5f7]"
-                    >
-                      {image ? (
-                        <div
-                          role="img"
-                          aria-label={image.altText?.trim() || product.name}
-                          className="absolute inset-6 rounded-lg bg-no-repeat transition-transform duration-300 group-hover:scale-[1.04]"
-                          style={{
-                            backgroundImage: `url("${image.url}")`,
-                            backgroundPosition: "center",
-                            backgroundSize: "contain",
-                          }}
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-white text-2xl font-semibold uppercase tracking-[0.1em] text-[#7c3aed]">
-                            {getInitials(product.name)}
-                          </div>
-                        </div>
-                      )}
-                      <span className="absolute left-3 top-3 rounded-lg bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#6d28d9] backdrop-blur">
-                        {formatUnitLabel(product.baseUnit)}
-                      </span>
-                    </Link>
-
-                    <div className="flex flex-1 flex-col gap-3 p-5">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#9b9ba3]">
-                        {product.brand?.name ?? "Erka's"}
-                      </p>
-                      <h3 className="line-clamp-2 text-base font-semibold leading-snug text-[#1d1d1f]">
-                        <Link
-                          href={`/products/${product.slug}`}
-                          className="transition-colors hover:text-[#7c3aed]"
-                        >
-                          {product.name}
-                        </Link>
-                      </h3>
-                      <p className="line-clamp-2 text-sm leading-6 text-[#6e6e73]">
-                        {summarizeText(
-                          product,
-                          locale === "mn"
-                            ? "Барааны дэлгэрэнгүй мэдээллийг каталогоос үзнэ үү."
-                            : "See more details in the catalog.",
-                        )}
-                      </p>
-
-                      <div className="mt-auto flex items-center justify-between gap-2 border-t border-black/6 pt-4">
-                        <span className="text-xs text-[#6e6e73]">
-                          {t.products.sku}: {product.sku ?? "—"}
-                        </span>
-                        <Link
-                          href="/products"
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-[#7c3aed] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#6d28d9]"
-                          aria-label={t.products.addToCart}
-                        >
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-3.5 w-3.5"
-                          >
-                            <circle cx="9" cy="21" r="1" />
-                            <circle cx="20" cy="21" r="1" />
-                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                          </svg>
-                          {t.products.addToCart}
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="mt-10 rounded-xl border border-dashed border-black/10 bg-[#f5f5f7] px-6 py-14 text-center">
-              <h3 className="font-[family:var(--font-display)] text-3xl tracking-[-0.04em] text-[#1d1d1f]">
-=======
         {/* Latest products */}
         <section className="mt-8">
           <div className="flex items-end justify-between gap-3">
@@ -623,27 +368,18 @@ export default async function HomePage() {
           ) : (
             <div className="mt-3 rounded-[10px] border border-dashed border-[#d4d4d8] bg-[#f6f6f7] px-6 py-12 text-center">
               <h3 className="text-xl font-semibold text-[#18181b]">
->>>>>>> c7d5ade (bizon)
                 {t.products.emptyTitle}
               </h3>
               <div className="mt-5 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/admin/products/new"
-<<<<<<< HEAD
-                  className="rounded-lg bg-[#7c3aed] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
-=======
                   className="rounded-[8px] bg-[#8e55cf] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#7d45c1]"
->>>>>>> c7d5ade (bizon)
                 >
                   {t.products.addProduct}
                 </Link>
                 <Link
                   href="/products"
-<<<<<<< HEAD
-                  className="rounded-lg border border-black/10 px-6 py-3 text-sm font-medium text-[#1d1d1f] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
-=======
                   className="rounded-[8px] border border-[#e4e4e7] px-5 py-2.5 text-sm font-medium text-[#18181b] transition-colors hover:border-[#8e55cf] hover:text-[#8e55cf]"
->>>>>>> c7d5ade (bizon)
                 >
                   {t.products.openCatalog}
                 </Link>
@@ -652,60 +388,6 @@ export default async function HomePage() {
           )}
         </section>
 
-<<<<<<< HEAD
-        {/*
-          BRAND STRIP — intentionally the quietest band on the page: it is social
-          proof, not a destination, so it gets a calm surface and restrained type
-          rather than competing with the product and department sections.
-        */}
-        <section className="rounded-lg border border-black/8 bg-[#f5f5f7] p-8 sm:p-12">
-          <div className="text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7c3aed]">
-              {t.brands.eyebrow}
-            </p>
-            <h3 className="mt-3 font-[family:var(--font-display)] text-2xl tracking-[-0.04em] text-[#1d1d1f] sm:text-3xl">
-              {t.brands.title}
-            </h3>
-          </div>
-
-          <div className="mt-10 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6">
-            {partnerBrands.map((brand) => (
-              <div
-                key={brand}
-                className="flex h-16 items-center justify-center rounded-lg border border-black/8 bg-white text-sm font-[family:var(--font-display)] font-semibold tracking-[-0.02em] text-[#6e6e73] transition-colors hover:border-[#7c3aed] hover:text-[#7c3aed]"
-              >
-                {brand}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* NEWSLETTER — one calm, centered closing band. */}
-        <section
-          id="contact"
-          className="scroll-mt-24 rounded-xl bg-[#f5f5f7] px-6 py-14 text-center sm:px-10 sm:py-16"
-        >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#7c3aed]">
-            {t.newsletter.eyebrow}
-          </p>
-          <h2 className="mx-auto mt-3 max-w-xl font-[family:var(--font-display)] text-3xl leading-[1.1] tracking-[-0.04em] text-[#1d1d1f] sm:text-4xl">
-            {t.newsletter.title}
-          </h2>
-          <form className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row">
-            <input
-              type="email"
-              required
-              placeholder={t.newsletter.placeholder}
-              className="flex-1 rounded-lg border border-black/10 bg-white px-5 py-3 text-sm text-[#1d1d1f] placeholder:text-[#9b9ba3] focus:border-[#7c3aed] focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-[#7c3aed] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#6d28d9]"
-            >
-              {t.newsletter.button}
-            </button>
-          </form>
-=======
         <ProductRail
           title={t.marketplace.bestSellers.title}
           viewAllHref="/products?featured=1"
@@ -775,7 +457,6 @@ export default async function HomePage() {
               </div>
             </div>
           </aside>
->>>>>>> c7d5ade (bizon)
         </section>
       </div>
 

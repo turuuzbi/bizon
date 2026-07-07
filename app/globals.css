@@ -1,34 +1,23 @@
 @import "tailwindcss";
 
 :root {
-<<<<<<< HEAD
   /* Apple-leaning neutrals: near-black ink, the signature #f5f5f7 gray. */
   --background: #ffffff;
   --foreground: #1d1d1f;
   --muted: #6e6e73;
   --muted-soft: #9b9ba3;
+  --muted-strong: #3f3f46;
   --accent: #7c3aed;
   --accent-strong: #6d28d9;
   --accent-tint: #f3f0fe;
-  --surface: #f5f5f7;
-  --surface-2: #f5f5f7;
-  --border: rgba(29, 29, 31, 0.08);
-  --border-strong: rgba(29, 29, 31, 0.14);
-=======
-  /* Core palette — white surfaces, neutral grays, purple used only as accent */
-  --background: #ffffff;
-  --foreground: #18181b;
-  --muted: #71717a;
-  --muted-strong: #3f3f46;
-  --accent: #8e55cf;
-  --accent-strong: #7d45c1;
   --accent-soft: #f3ebfb;
 
   /* Marketplace surfaces */
-  --surface: #f6f6f7;
+  --surface: #f5f5f7;
+  --surface-2: #f5f5f7;
   --surface-strong: #efeff1;
-  --border: #e4e4e7;
-  --border-strong: #d4d4d8;
+  --border: rgba(29, 29, 31, 0.08);
+  --border-strong: rgba(29, 29, 31, 0.14);
 
   /* Semantic */
   --success: #16a34a;
@@ -42,7 +31,6 @@
   --radius-sm: 8px;
   --radius-md: 10px;
   --radius-lg: 12px;
->>>>>>> c7d5ade (bizon)
 }
 
 @theme inline {
@@ -51,20 +39,15 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
-<<<<<<< HEAD
   --color-accent-tint: var(--accent-tint);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --font-sans: var(--font-inter);
-=======
   --color-accent-soft: var(--accent-soft);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-surface-strong: var(--surface-strong);
   --color-border: var(--border);
   --color-success: var(--success);
   --color-danger: var(--danger);
-  --font-sans: var(--font-manrope);
->>>>>>> c7d5ade (bizon)
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-inter);
 }
